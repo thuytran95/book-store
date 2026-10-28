@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_inventory"
+        android:icon="@drawable/ic_nav_book"
+        android:title="Kho sách" />
+    <item
+        android:id="@+id/nav_category"
+        android:icon="@drawable/ic_nav_category"
+        android:title="Thể loại" />
+    <item
+        android:id="@+id/nav_add"
+        android:icon="@drawable/ic_nav_add"
+        android:title="Thêm sách" />
+    <item
+        android:id="@+id/nav_search"
+        android:icon="@drawable/ic_nav_filter"
+        android:title="Bộ lọc" />
+</menu>

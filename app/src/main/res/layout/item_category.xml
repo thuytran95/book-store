@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="1dp"
+    app:cardBackgroundColor="@color/surface">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <!-- Category Code Box -->
+        <FrameLayout
+            android:id="@+id/containerCatCode"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_chip">
+
+            <TextView
+                android:id="@+id/txtCatCode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="VH"
+                android:textColor="@color/primary"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+        </FrameLayout>
+
+        <!-- Category Info -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txtCatName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Văn học cổ điển &amp; Hiện đại"
+                android:textColor="@color/on_surface"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtCatStats"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="420 cuốn sách (42.8%)"
+                android:textColor="@color/on_surface_variant"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <!-- Actions -->
+        <ImageView
+            android:id="@+id/btnEditCat"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:contentDescription="Edit"
+            android:padding="4dp"
+            android:src="@android:drawable/ic_menu_edit"
+            app:tint="@color/on_surface_variant" />
+
+        <ImageView
+            android:id="@+id/btnDeleteCat"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="4dp"
+            android:contentDescription="Delete"
+            android:padding="4dp"
+            android:src="@android:drawable/ic_menu_delete"
+            app:tint="@color/error" />
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

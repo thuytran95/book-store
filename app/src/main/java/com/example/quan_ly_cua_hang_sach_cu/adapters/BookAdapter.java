@@ -9,12 +9,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.quan_ly_cua_hang_sach_cu.R;
-import com.example.quan_ly_cua_hang_sach_cu.models.BookModel;
+import com.example.quan_ly_cua_hang_sach_cu.models.Book;
 import java.util.List;
 
 public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder> {
 
-    private List<BookModel> bookList;
+    private List<Book> bookList;
     private OnBookActionListener listener;
 
     public interface OnBookActionListener {
@@ -22,7 +22,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
         void onDeleteClick(int position);
     }
 
-    public BookAdapter(List<BookModel> bookList, OnBookActionListener listener) {
+    public BookAdapter(List<Book> bookList, OnBookActionListener listener) {
         this.bookList = bookList;
         this.listener = listener;
     }
@@ -36,13 +36,14 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull BookViewHolder holder, int position) {
-        BookModel book = bookList.get(position);
+        Book book = bookList.get(position);
+        if (book == null) return;
         holder.txtBookId.setText(book.getBookCode() != null ? book.getBookCode() : "MS-" + book.getId());
-        holder.txtBookTitle.setText(book.getTitle());
-        holder.txtAuthor.setText("Tác giả: " + book.getAuthor());
-        holder.txtCategoryTag.setText(book.getCategory());
-        holder.txtCondition.setText(book.getCondition() + " (" + book.getConditionPercent() + "%)");
-        holder.txtPrice.setText(book.getPrice());
+        holder.txtBookTitle.setText(book.getTitle() != null ? book.getTitle() : "");
+        holder.txtAuthor.setText("Tác giả: " + (book.getAuthor() != null ? book.getAuthor() : "Đang cập nhật"));
+        holder.txtCategoryTag.setText(book.getCategory() != null ? book.getCategory() : "Khác");
+        holder.txtCondition.setText((book.getCondition() != null ? book.getCondition() : "Tốt") + " (" + book.getConditionPercent() + "%)");
+        holder.txtPrice.setText(book.getPrice() != null ? book.getPrice() : "0 đ");
 
         if (book.getOriginalPrice() != null && !book.getOriginalPrice().isEmpty()) {
             holder.txtOriginalPrice.setVisibility(View.VISIBLE);
@@ -53,7 +54,13 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
 
         if (book.getImageUri() != null && !book.getImageUri().isEmpty()) {
             try {
-                holder.ivBookCover.setImageURI(Uri.parse(book.getImageUri()));
+                Uri uri = Uri.parse(book.getImageUri());
+                android.graphics.Bitmap bmp = com.example.quan_ly_cua_hang_sach_cu.utils.ImageUtils.decodeSampledBitmapFromUri(holder.itemView.getContext(), uri, 150, 200);
+                if (bmp != null) {
+                    holder.ivBookCover.setImageBitmap(bmp);
+                } else {
+                    holder.ivBookCover.setImageURI(uri);
+                }
             } catch (Exception e) {
                 holder.ivBookCover.setImageResource(R.drawable.ic_book_open);
             }

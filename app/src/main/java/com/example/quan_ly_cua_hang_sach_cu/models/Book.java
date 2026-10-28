@@ -1,6 +1,6 @@
 package com.example.quan_ly_cua_hang_sach_cu.models;
 
-public class BookModel {
+public class Book {
     private int id;
     private String bookCode;
     private String title;
@@ -12,9 +12,9 @@ public class BookModel {
     private String originalPrice;
     private String imageUri;
 
-    public BookModel() {}
+    public Book() {}
 
-    public BookModel(String bookCode, String title, String author, String category, String condition, int conditionPercent, String price, String originalPrice, String imageUri) {
+    public Book(String bookCode, String title, String author, String category, String condition, int conditionPercent, String price, String originalPrice, String imageUri) {
         this.bookCode = bookCode;
         this.title = title;
         this.author = author;
@@ -26,7 +26,7 @@ public class BookModel {
         this.imageUri = imageUri;
     }
 
-    public BookModel(int id, String bookCode, String title, String author, String category, String condition, int conditionPercent, String price, String originalPrice, String imageUri) {
+    public Book(int id, String bookCode, String title, String author, String category, String condition, int conditionPercent, String price, String originalPrice, String imageUri) {
         this.id = id;
         this.bookCode = bookCode;
         this.title = title;

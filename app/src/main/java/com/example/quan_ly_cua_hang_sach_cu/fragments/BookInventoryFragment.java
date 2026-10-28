@@ -15,13 +15,13 @@ import com.example.quan_ly_cua_hang_sach_cu.DatabaseHelper;
 import com.example.quan_ly_cua_hang_sach_cu.MainActivity;
 import com.example.quan_ly_cua_hang_sach_cu.R;
 import com.example.quan_ly_cua_hang_sach_cu.adapters.BookAdapter;
-import com.example.quan_ly_cua_hang_sach_cu.models.BookModel;
+import com.example.quan_ly_cua_hang_sach_cu.models.Book;
 import java.util.List;
 
 public class BookInventoryFragment extends Fragment {
 
     private DatabaseHelper dbHelper;
-    private List<BookModel> bookList;
+    private List<Book> bookList;
     private BookAdapter adapter;
 
     @Nullable
@@ -40,7 +40,7 @@ public class BookInventoryFragment extends Fragment {
             @Override
             public void onEditClick(int position) {
                 if (position == RecyclerView.NO_POSITION || position >= bookList.size()) return;
-                BookModel book = bookList.get(position);
+                Book book = bookList.get(position);
                 Bundle bundle = new Bundle();
                 bundle.putInt("book_id", book.getId());
                 bundle.putString("book_code", book.getBookCode());
@@ -67,7 +67,7 @@ public class BookInventoryFragment extends Fragment {
 
             @Override
             public void onDeleteClick(int position) {
-                BookModel book = bookList.get(position);
+                Book book = bookList.get(position);
                 new AlertDialog.Builder(getContext())
                         .setTitle("Xóa sách")
                         .setMessage("Bạn có chắc chắn muốn xóa sách \"" + book.getTitle() + "\" không?")
@@ -89,10 +89,10 @@ public class BookInventoryFragment extends Fragment {
     private void loadBooks() {
         bookList = dbHelper.getAllBooks();
         if (bookList.isEmpty()) {
-            dbHelper.addBook(new BookModel("MS-00124", "Nỗi Buồn Chiến Tranh", "Bảo Ninh", "Văn học", "Tốt", 85, "65.000 đ", "120.000 đ", null));
-            dbHelper.addBook(new BookModel("MS-00208", "Vũ Trụ Trong Vỏ Hạt Dẻ", "Stephen Hawking", "Khoa học", "Rất mới", 95, "88.000 đ", null, null));
-            dbHelper.addBook(new BookModel("MS-00315", "Steve Jobs - Tiểu Sử Chính Thức", "Walter Isaacson", "Tiểu sử", "Khá - gáy sờn", 70, "95.000 đ", "190.000 đ", null));
-            dbHelper.addBook(new BookModel("MS-00412", "Dế Mèn Phiêu Lưu Ký", "Tô Hoài", "Văn học", "Tốt", 80, "45.000 đ", "85.000 đ", null));
+            dbHelper.addBook(new Book("MS-00124", "Nỗi Buồn Chiến Tranh", "Bảo Ninh", "Văn học", "Tốt", 85, "65.000 đ", "120.000 đ", null));
+            dbHelper.addBook(new Book("MS-00208", "Vũ Trụ Trong Vỏ Hạt Dẻ", "Stephen Hawking", "Khoa học", "Rất mới", 95, "88.000 đ", null, null));
+            dbHelper.addBook(new Book("MS-00315", "Steve Jobs - Tiểu Sử Chính Thức", "Walter Isaacson", "Tiểu sử", "Khá - gáy sờn", 70, "95.000 đ", "190.000 đ", null));
+            dbHelper.addBook(new Book("MS-00412", "Dế Mèn Phiêu Lưu Ký", "Tô Hoài", "Văn học", "Tốt", 80, "45.000 đ", "85.000 đ", null));
             bookList = dbHelper.getAllBooks();
         }
     }

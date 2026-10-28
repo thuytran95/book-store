@@ -8,12 +8,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.quan_ly_cua_hang_sach_cu.R;
-import com.example.quan_ly_cua_hang_sach_cu.models.CategoryModel;
+import com.example.quan_ly_cua_hang_sach_cu.models.Category;
 import java.util.List;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
 
-    private List<CategoryModel> categoryList;
+    private List<Category> categoryList;
     private OnCategoryActionListener listener;
 
     public interface OnCategoryActionListener {
@@ -21,7 +21,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         void onEditClick(int position);
     }
 
-    public CategoryAdapter(List<CategoryModel> categoryList, OnCategoryActionListener listener) {
+    public CategoryAdapter(List<Category> categoryList, OnCategoryActionListener listener) {
         this.categoryList = categoryList;
         this.listener = listener;
     }
@@ -35,7 +35,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     @Override
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
-        CategoryModel cat = categoryList.get(position);
+        Category cat = categoryList.get(position);
         holder.txtCatName.setText(cat.getName());
 
         holder.btnDeleteCat.setOnClickListener(v -> {

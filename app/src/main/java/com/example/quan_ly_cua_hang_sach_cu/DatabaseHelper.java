@@ -6,8 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.example.quan_ly_cua_hang_sach_cu.models.BookModel;
-import com.example.quan_ly_cua_hang_sach_cu.models.CategoryModel;
+import com.example.quan_ly_cua_hang_sach_cu.models.Book;
+import com.example.quan_ly_cua_hang_sach_cu.models.Category;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +72,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // --- CATEGORY CRUD ---
-    public void addCategory(CategoryModel category) {
+    public void addCategory(Category category) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(CAT_NAME, category.getName());
@@ -80,27 +80,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public int updateCategory(CategoryModel category) {
+    public int updateCategory(Category category) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(CAT_NAME, category.getName());
         return db.update(TABLE_CATEGORY, values, CAT_ID + "=?", new String[]{String.valueOf(category.getId())});
     }
 
-    public int deleteCategory(CategoryModel category) {
+    public int deleteCategory(Category category) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(TABLE_CATEGORY, CAT_ID + "=?", new String[]{String.valueOf(category.getId())});
     }
 
-    public List<CategoryModel> getAllCategories() {
-        List<CategoryModel> list = new ArrayList<>();
+    public List<Category> getAllCategories() {
+        List<Category> list = new ArrayList<>();
         String query = "SELECT * FROM " + TABLE_CATEGORY;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
 
         if (cursor.moveToFirst()) {
             do {
-                CategoryModel cat = new CategoryModel();
+                Category cat = new Category();
                 cat.setId(cursor.getInt(0));
                 cat.setName(cursor.getString(1));
                 list.add(cat);
@@ -112,7 +112,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // --- BOOK CRUD ---
-    public void addBook(BookModel book) {
+    public void addBook(Book book) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(BOOK_CODE, book.getBookCode());
@@ -128,7 +128,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public int updateBook(BookModel book) {
+    public int updateBook(Book book) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(BOOK_CODE, book.getBookCode());
@@ -143,20 +143,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.update(TABLE_BOOK, values, BOOK_ID + "=?", new String[]{String.valueOf(book.getId())});
     }
 
-    public int deleteBook(BookModel book) {
+    public int deleteBook(Book book) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(TABLE_BOOK, BOOK_ID + "=?", new String[]{String.valueOf(book.getId())});
     }
 
-    public List<BookModel> getAllBooks() {
-        List<BookModel> list = new ArrayList<>();
+    public List<Book> getAllBooks() {
+        List<Book> list = new ArrayList<>();
         String query = "SELECT * FROM " + TABLE_BOOK;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
 
         if (cursor.moveToFirst()) {
             do {
-                BookModel book = new BookModel();
+                Book book = new Book();
                 book.setId(cursor.getInt(0));
                 book.setBookCode(cursor.getString(1));
                 book.setTitle(cursor.getString(2));

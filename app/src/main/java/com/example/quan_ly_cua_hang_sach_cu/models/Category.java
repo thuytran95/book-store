@@ -1,16 +1,16 @@
 package com.example.quan_ly_cua_hang_sach_cu.models;
 
-public class CategoryModel {
+public class Category {
     private int id;
     private String name;
 
-    public CategoryModel() {}
+    public Category() {}
 
-    public CategoryModel(String name) {
+    public Category(String name) {
         this.name = name;
     }
 
-    public CategoryModel(int id, String name) {
+    public Category(int id, String name) {
         this.id = id;
         this.name = name;
     }

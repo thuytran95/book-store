@@ -19,8 +19,8 @@ import androidx.fragment.app.Fragment;
 import com.example.quan_ly_cua_hang_sach_cu.DatabaseHelper;
 import com.example.quan_ly_cua_hang_sach_cu.MainActivity;
 import com.example.quan_ly_cua_hang_sach_cu.R;
-import com.example.quan_ly_cua_hang_sach_cu.models.BookModel;
-import com.example.quan_ly_cua_hang_sach_cu.models.CategoryModel;
+import com.example.quan_ly_cua_hang_sach_cu.models.Book;
+import com.example.quan_ly_cua_hang_sach_cu.models.Category;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,8 +38,16 @@ public class AddBookFragment extends Fragment {
             new ActivityResultContracts.GetContent(),
             uri -> {
                 if (uri != null) {
+                    try {
+                        requireContext().getContentResolver().takePersistableUriPermission(uri, android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    } catch (Exception ignored) {}
                     selectedImageUri = uri.toString();
-                    ivBookImage.setImageURI(uri);
+                    android.graphics.Bitmap bmp = com.example.quan_ly_cua_hang_sach_cu.utils.ImageUtils.decodeSampledBitmapFromUri(getContext(), uri, 300, 400);
+                    if (bmp != null) {
+                        ivBookImage.setImageBitmap(bmp);
+                    } else {
+                        ivBookImage.setImageURI(uri);
+                    }
                 }
             }
     );
@@ -66,17 +74,17 @@ public class AddBookFragment extends Fragment {
         ivBookImage.setOnClickListener(v -> imagePickerLauncher.launch("image/*"));
 
         // 1. Load categories
-        List<CategoryModel> categoryModels = dbHelper.getAllCategories();
+        List<Category> categoryModels = dbHelper.getAllCategories();
         if (categoryModels.isEmpty()) {
-            dbHelper.addCategory(new CategoryModel("Văn học cổ điển & Hiện đại"));
-            dbHelper.addCategory(new CategoryModel("Khoa học & Vũ trụ"));
-            dbHelper.addCategory(new CategoryModel("Lịch sử & Triết học"));
-            dbHelper.addCategory(new CategoryModel("Tiểu sử & Danh nhân"));
+            dbHelper.addCategory(new Category("Văn học cổ điển & Hiện đại"));
+            dbHelper.addCategory(new Category("Khoa học & Vũ trụ"));
+            dbHelper.addCategory(new Category("Lịch sử & Triết học"));
+            dbHelper.addCategory(new Category("Tiểu sử & Danh nhân"));
             categoryModels = dbHelper.getAllCategories();
         }
 
         List<String> categoryNames = new ArrayList<>();
-        for (CategoryModel cat : categoryModels) {
+        for (Category cat : categoryModels) {
             categoryNames.add(cat.getName());
         }
 
@@ -105,11 +113,20 @@ public class AddBookFragment extends Fragment {
             isEditing = true;
             editBookId = getArguments().getInt("book_id");
             editBookCode = getArguments().getString("book_code");
-            edtTitle.setText(getArguments().getString("title"));
-            edtAuthor.setText(getArguments().getString("author"));
-            edtIsbn.setText(editBookCode);
-            edtPrice.setText(getArguments().getString("price"));
-            edtOriginalPrice.setText(getArguments().getString("original_price"));
+            
+            String title = getArguments().getString("title");
+            if (title != null) edtTitle.setText(title);
+
+            String author = getArguments().getString("author");
+            if (author != null) edtAuthor.setText(author);
+
+            if (editBookCode != null) edtIsbn.setText(editBookCode);
+
+            String price = getArguments().getString("price");
+            if (price != null) edtPrice.setText(price);
+
+            String origPrice = getArguments().getString("original_price");
+            if (origPrice != null) edtOriginalPrice.setText(origPrice);
 
             String cat = getArguments().getString("category");
             if (cat != null) autoCompleteCategory.setText(cat, false);
@@ -120,8 +137,16 @@ public class AddBookFragment extends Fragment {
             selectedImageUri = getArguments().getString("image_uri");
             if (selectedImageUri != null && !selectedImageUri.isEmpty()) {
                 try {
-                    ivBookImage.setImageURI(Uri.parse(selectedImageUri));
-                } catch (Exception ignored) {}
+                    Uri uri = Uri.parse(selectedImageUri);
+                    android.graphics.Bitmap bmp = com.example.quan_ly_cua_hang_sach_cu.utils.ImageUtils.decodeSampledBitmapFromUri(getContext(), uri, 300, 400);
+                    if (bmp != null) {
+                        ivBookImage.setImageBitmap(bmp);
+                    } else {
+                        ivBookImage.setImageURI(uri);
+                    }
+                } catch (Exception ignored) {
+                    ivBookImage.setImageResource(R.drawable.ic_book_open);
+                }
             }
 
             btnSave.setText("Cập nhật sách");
@@ -150,11 +175,11 @@ public class AddBookFragment extends Fragment {
                 int conditionPercent = selectedCondition.equals("Tốt") ? 90 : (selectedCondition.equals("Khá") ? 75 : 60);
 
                 if (isEditing) {
-                    BookModel updatedBook = new BookModel(editBookId, bookCode, title, author, selectedCategory, selectedCondition, conditionPercent, finalPrice, finalOrigPrice, selectedImageUri);
+                    Book updatedBook = new Book(editBookId, bookCode, title, author, selectedCategory, selectedCondition, conditionPercent, finalPrice, finalOrigPrice, selectedImageUri);
                     dbHelper.updateBook(updatedBook);
                     Toast.makeText(getContext(), "Đã cập nhật sách thành công!", Toast.LENGTH_SHORT).show();
                 } else {
-                    BookModel newBook = new BookModel(bookCode, title, author, selectedCategory, selectedCondition, conditionPercent, finalPrice, finalOrigPrice, selectedImageUri);
+                    Book newBook = new Book(bookCode, title, author, selectedCategory, selectedCondition, conditionPercent, finalPrice, finalOrigPrice, selectedImageUri);
                     dbHelper.addBook(newBook);
                     Toast.makeText(getContext(), "Đã lưu sách thành công vào kho!", Toast.LENGTH_SHORT).show();
                 }

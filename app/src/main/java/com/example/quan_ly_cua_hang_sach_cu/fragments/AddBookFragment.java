@@ -1,43 +1,169 @@
 package com.example.quan_ly_cua_hang_sach_cu.fragments;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import com.example.quan_ly_cua_hang_sach_cu.DatabaseHelper;
 import com.example.quan_ly_cua_hang_sach_cu.R;
+import com.example.quan_ly_cua_hang_sach_cu.models.BookModel;
+import com.example.quan_ly_cua_hang_sach_cu.models.CategoryModel;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AddBookFragment extends Fragment {
+
+    private DatabaseHelper dbHelper;
+    private ImageView ivBookImage;
+    private String selectedImageUri = null;
+    private boolean isEditing = false;
+    private int editBookId = -1;
+    private String editBookCode = null;
+
+    private final ActivityResultLauncher<String> imagePickerLauncher = registerForActivityResult(
+            new ActivityResultContracts.GetContent(),
+            uri -> {
+                if (uri != null) {
+                    selectedImageUri = uri.toString();
+                    ivBookImage.setImageURI(uri);
+                }
+            }
+    );
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add_book, container, false);
 
+        dbHelper = new DatabaseHelper(getContext());
+
+        ivBookImage = view.findViewById(R.id.ivBookImage);
+        Button btnSelectImage = view.findViewById(R.id.btnSelectImage);
         EditText edtTitle = view.findViewById(R.id.edtAddTitle);
         EditText edtAuthor = view.findViewById(R.id.edtAddAuthor);
         EditText edtIsbn = view.findViewById(R.id.edtAddIsbn);
         EditText edtPrice = view.findViewById(R.id.edtAddPrice);
         EditText edtOriginalPrice = view.findViewById(R.id.edtAddOriginalPrice);
+        AutoCompleteTextView autoCompleteCategory = view.findViewById(R.id.autoCompleteCategory);
+        AutoCompleteTextView autoCompleteCondition = view.findViewById(R.id.autoCompleteCondition);
         Button btnSave = view.findViewById(R.id.btnSaveBook);
+
+        btnSelectImage.setOnClickListener(v -> imagePickerLauncher.launch("image/*"));
+        ivBookImage.setOnClickListener(v -> imagePickerLauncher.launch("image/*"));
+
+        // 1. Load categories
+        List<CategoryModel> categoryModels = dbHelper.getAllCategories();
+        if (categoryModels.isEmpty()) {
+            dbHelper.addCategory(new CategoryModel("Văn học cổ điển & Hiện đại"));
+            dbHelper.addCategory(new CategoryModel("Khoa học & Vũ trụ"));
+            dbHelper.addCategory(new CategoryModel("Lịch sử & Triết học"));
+            dbHelper.addCategory(new CategoryModel("Tiểu sử & Danh nhân"));
+            categoryModels = dbHelper.getAllCategories();
+        }
+
+        List<String> categoryNames = new ArrayList<>();
+        for (CategoryModel cat : categoryModels) {
+            categoryNames.add(cat.getName());
+        }
+
+        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, categoryNames);
+        autoCompleteCategory.setAdapter(categoryAdapter);
+        autoCompleteCategory.setOnClickListener(v -> autoCompleteCategory.showDropDown());
+        autoCompleteCategory.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) autoCompleteCategory.showDropDown();
+        });
+
+        // 2. Load conditions
+        List<String> conditionOptions = new ArrayList<>();
+        conditionOptions.add("Tốt");
+        conditionOptions.add("Khá");
+        conditionOptions.add("Trung bình");
+
+        ArrayAdapter<String> conditionAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, conditionOptions);
+        autoCompleteCondition.setAdapter(conditionAdapter);
+        autoCompleteCondition.setOnClickListener(v -> autoCompleteCondition.showDropDown());
+        autoCompleteCondition.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) autoCompleteCondition.showDropDown();
+        });
+
+        // Check if editing
+        if (getArguments() != null && getArguments().containsKey("book_id")) {
+            isEditing = true;
+            editBookId = getArguments().getInt("book_id");
+            editBookCode = getArguments().getString("book_code");
+            edtTitle.setText(getArguments().getString("title"));
+            edtAuthor.setText(getArguments().getString("author"));
+            edtIsbn.setText(editBookCode);
+            edtPrice.setText(getArguments().getString("price"));
+            edtOriginalPrice.setText(getArguments().getString("original_price"));
+
+            String cat = getArguments().getString("category");
+            if (cat != null) autoCompleteCategory.setText(cat, false);
+
+            String cond = getArguments().getString("condition");
+            if (cond != null) autoCompleteCondition.setText(cond, false);
+
+            selectedImageUri = getArguments().getString("image_uri");
+            if (selectedImageUri != null && !selectedImageUri.isEmpty()) {
+                try {
+                    ivBookImage.setImageURI(Uri.parse(selectedImageUri));
+                } catch (Exception ignored) {}
+            }
+
+            btnSave.setText("Cập nhật sách");
+        }
 
         btnSave.setOnClickListener(v -> {
             String title = edtTitle.getText().toString().trim();
             String author = edtAuthor.getText().toString().trim();
+            String isbn = edtIsbn.getText().toString().trim();
+            String price = edtPrice.getText().toString().trim();
+            String originalPrice = edtOriginalPrice.getText().toString().trim();
+            String selectedCategory = autoCompleteCategory.getText().toString().trim();
+            String selectedCondition = autoCompleteCondition.getText().toString().trim();
+
             if (title.isEmpty() || author.isEmpty()) {
                 Toast.makeText(getContext(), "Vui lòng nhập tên sách và tác giả!", Toast.LENGTH_SHORT).show();
+            } else if (selectedCategory.isEmpty()) {
+                Toast.makeText(getContext(), "Vui lòng chọn thể loại!", Toast.LENGTH_SHORT).show();
+            } else if (selectedCondition.isEmpty()) {
+                Toast.makeText(getContext(), "Vui lòng chọn tình trạng sách!", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(getContext(), "Đã lưu sách thành công vào kho!", Toast.LENGTH_SHORT).show();
-                edtTitle.setText("");
-                edtAuthor.setText("");
-                edtIsbn.setText("");
-                edtPrice.setText("");
-                edtOriginalPrice.setText("");
+                String bookCode = isbn.isEmpty() ? (editBookCode != null ? editBookCode : "MS-" + (int)(Math.random() * 90000 + 10000)) : isbn;
+                String finalPrice = price.isEmpty() ? "50.000 đ" : (price.contains("đ") ? price : price + " đ");
+                String finalOrigPrice = originalPrice.isEmpty() ? null : (originalPrice.contains("đ") ? originalPrice : originalPrice + " đ");
+
+                int conditionPercent = selectedCondition.equals("Tốt") ? 90 : (selectedCondition.equals("Khá") ? 75 : 60);
+
+                if (isEditing) {
+                    BookModel updatedBook = new BookModel(editBookId, bookCode, title, author, selectedCategory, selectedCondition, conditionPercent, finalPrice, finalOrigPrice, selectedImageUri);
+                    dbHelper.updateBook(updatedBook);
+                    Toast.makeText(getContext(), "Đã cập nhật sách thành công!", Toast.LENGTH_SHORT).show();
+                } else {
+                    BookModel newBook = new BookModel(bookCode, title, author, selectedCategory, selectedCondition, conditionPercent, finalPrice, finalOrigPrice, selectedImageUri);
+                    dbHelper.addBook(newBook);
+                    Toast.makeText(getContext(), "Đã lưu sách thành công vào kho!", Toast.LENGTH_SHORT).show();
+                }
+
+                if (getActivity() != null) {
+                    BottomNavigationView bottomNav = getActivity().findViewById(R.id.bottom_navigation);
+                    if (bottomNav != null) {
+                        bottomNav.setSelectedItemId(R.id.nav_inventory);
+                    }
+                }
             }
         });
 

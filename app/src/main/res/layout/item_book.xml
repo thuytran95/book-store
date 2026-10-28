@@ -21,10 +21,19 @@
             android:layout_height="95dp"
             android:background="@color/surface_container">
 
+            <ImageView
+                android:id="@+id/ivBookCover"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:contentDescription="Book Cover"
+                android:src="@drawable/ic_book_open" />
+
             <TextView
                 android:id="@+id/txtBookId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
                 android:background="#99000000"
                 android:paddingHorizontal="4dp"
                 android:paddingVertical="1dp"

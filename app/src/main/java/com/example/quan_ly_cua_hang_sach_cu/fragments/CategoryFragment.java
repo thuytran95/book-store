@@ -14,38 +14,46 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.example.quan_ly_cua_hang_sach_cu.DatabaseHelper;
 import com.example.quan_ly_cua_hang_sach_cu.R;
 import com.example.quan_ly_cua_hang_sach_cu.adapters.CategoryAdapter;
 import com.example.quan_ly_cua_hang_sach_cu.models.CategoryModel;
-import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryFragment extends Fragment {
 
     private List<CategoryModel> categoryList;
     private CategoryAdapter adapter;
+    private DatabaseHelper dbHelper;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_category, container, false);
 
+        dbHelper = new DatabaseHelper(getContext());
+
         RecyclerView recyclerView = view.findViewById(R.id.recyclerViewCategories);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        categoryList = new ArrayList<>();
-        categoryList.add(new CategoryModel("1", "Văn học cổ điển & Hiện đại"));
-        categoryList.add(new CategoryModel("2", "Khoa học & Vũ trụ"));
-        categoryList.add(new CategoryModel("3", "Lịch sử & Triết học"));
-        categoryList.add(new CategoryModel("4", "Tiểu sử & Danh nhân"));
+        categoryList = dbHelper.getAllCategories();
+        if (categoryList.isEmpty()) {
+            dbHelper.addCategory(new CategoryModel("Văn học cổ điển & Hiện đại"));
+            dbHelper.addCategory(new CategoryModel("Khoa học & Vũ trụ"));
+            dbHelper.addCategory(new CategoryModel("Lịch sử & Triết học"));
+            dbHelper.addCategory(new CategoryModel("Tiểu sử & Danh nhân"));
+            categoryList = dbHelper.getAllCategories();
+        }
 
         adapter = new CategoryAdapter(categoryList, new CategoryAdapter.OnCategoryActionListener() {
             @Override
             public void onDeleteClick(int position) {
+                CategoryModel cat = categoryList.get(position);
                 new AlertDialog.Builder(getContext())
                         .setTitle("Xóa thể loại")
-                        .setMessage("Bạn có chắc chắn muốn xóa thể loại \"" + categoryList.get(position).getName() + "\" không?")
+                        .setMessage("Bạn có chắc chắn muốn xóa thể loại \"" + cat.getName() + "\" không?")
                         .setPositiveButton("Xóa", (dialog, which) -> {
+                            dbHelper.deleteCategory(cat);
                             categoryList.remove(position);
                             adapter.notifyItemRemoved(position);
                             Toast.makeText(getContext(), "Đã xóa thể loại thành công!", Toast.LENGTH_SHORT).show();
@@ -96,19 +104,17 @@ public class CategoryFragment extends Fragment {
                 Toast.makeText(getContext(), "Vui lòng nhập tên thể loại!", Toast.LENGTH_SHORT).show();
             } else {
                 if (existingCategory != null) {
-                    // Update existing
-                    CategoryModel updated = new CategoryModel(
-                            existingCategory.getId(),
-                            name
-                    );
-                    categoryList.set(position, updated);
+                    existingCategory.setName(name);
+                    dbHelper.updateCategory(existingCategory);
+                    categoryList.set(position, existingCategory);
                     adapter.notifyItemChanged(position);
                     Toast.makeText(getContext(), "Đã cập nhật thể loại thành công!", Toast.LENGTH_SHORT).show();
                 } else {
-                    // Add new
-                    String id = String.valueOf(categoryList.size() + 1);
-                    categoryList.add(new CategoryModel(id, name));
-                    adapter.notifyItemInserted(categoryList.size() - 1);
+                    CategoryModel newCat = new CategoryModel(name);
+                    dbHelper.addCategory(newCat);
+                    categoryList.clear();
+                    categoryList.addAll(dbHelper.getAllCategories());
+                    adapter.notifyDataSetChanged();
                     Toast.makeText(getContext(), "Đã thêm thể loại mới thành công!", Toast.LENGTH_SHORT).show();
                 }
                 dialog.dismiss();

@@ -12,8 +12,4 @@
         android:id="@+id/nav_add"
         android:icon="@drawable/ic_nav_add"
         android:title="Thêm sách" />
-    <item
-        android:id="@+id/nav_search"
-        android:icon="@drawable/ic_nav_filter"
-        android:title="Bộ lọc" />
 </menu>

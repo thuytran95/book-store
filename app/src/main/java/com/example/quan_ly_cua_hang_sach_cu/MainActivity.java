@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment;
 import com.example.quan_ly_cua_hang_sach_cu.fragments.AddBookFragment;
 import com.example.quan_ly_cua_hang_sach_cu.fragments.BookInventoryFragment;
 import com.example.quan_ly_cua_hang_sach_cu.fragments.CategoryFragment;
-import com.example.quan_ly_cua_hang_sach_cu.fragments.SearchFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -49,9 +48,6 @@ public class MainActivity extends AppCompatActivity {
             } else if (itemId == R.id.nav_add) {
                 selectedFragment = new AddBookFragment();
                 txtScreenTitle.setText("Thêm sách");
-            } else if (itemId == R.id.nav_search) {
-                selectedFragment = new SearchFragment();
-                txtScreenTitle.setText("Bộ lọc");
             }
 
             if (selectedFragment != null) {

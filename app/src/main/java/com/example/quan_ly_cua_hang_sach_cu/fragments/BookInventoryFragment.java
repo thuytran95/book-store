@@ -1,6 +1,5 @@
 package com.example.quan_ly_cua_hang_sach_cu.fragments;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -25,6 +24,9 @@ import com.example.quan_ly_cua_hang_sach_cu.MainActivity;
 import com.example.quan_ly_cua_hang_sach_cu.R;
 import com.example.quan_ly_cua_hang_sach_cu.adapters.BookAdapter;
 import com.example.quan_ly_cua_hang_sach_cu.models.Book;
+import com.example.quan_ly_cua_hang_sach_cu.models.Category;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.chip.Chip;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -188,13 +190,15 @@ public class BookInventoryFragment extends Fragment {
     }
 
     private void showFilterDialog() {
-        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_filter, null);
-        AlertDialog dialog = new AlertDialog.Builder(getContext())
-                .setView(dialogView)
-                .create();
+        View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_filter, null);
+        BottomSheetDialog dialog = new BottomSheetDialog(requireContext());
+        dialog.setContentView(dialogView);
 
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        View bottomSheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+        if (bottomSheet != null) {
+            BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(bottomSheet);
+            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            behavior.setSkipCollapsed(true);
         }
 
         TextView txtPriceRangeLabel = dialogView.findViewById(R.id.txtPriceRangeLabel);
@@ -206,12 +210,21 @@ public class BookInventoryFragment extends Fragment {
         ImageButton btnCloseFilter = dialogView.findViewById(R.id.btnCloseFilter);
 
         // Setup Spinners
-        String[] conditions = {"Tất cả tình trạng", "Tốt (> 80% nguyên bản)", "Khá (65% - 80%)", "Trung bình (< 65%)"};
-        ArrayAdapter<String> condAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, conditions);
+        String[] conditions = {"Tất cả tình trạng", "Tốt", "Khá", "Trung bình"};
+        ArrayAdapter<String> condAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, conditions);
         spinnerCondition.setAdapter(condAdapter);
 
-        String[] categories = {"Tất cả thể loại", "Văn học", "Khoa học", "Tiểu sử", "Lịch sử", "Triết học", "Nghệ thuật"};
-        ArrayAdapter<String> catAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, categories);
+        // Fetch categories dynamically from database
+        List<Category> dbCategories = dbHelper.getAllCategories();
+        List<String> categoryList = new ArrayList<>();
+        categoryList.add("Tất cả thể loại");
+        for (Category cat : dbCategories) {
+            if (cat.getName() != null && !cat.getName().isEmpty() && !categoryList.contains(cat.getName())) {
+                categoryList.add(cat.getName());
+            }
+        }
+        String[] categories = categoryList.toArray(new String[0]);
+        ArrayAdapter<String> catAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, categories);
         spinnerCategory.setAdapter(catAdapter);
 
         // Set current filter values
@@ -254,7 +267,7 @@ public class BookInventoryFragment extends Fragment {
             else conditionFilter = "all";
 
             int catPos = spinnerCategory.getSelectedItemPosition();
-            if (catPos > 0) {
+            if (catPos > 0 && catPos < categories.length) {
                 categoryFilter = categories[catPos];
             } else {
                 categoryFilter = "all";

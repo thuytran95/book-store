@@ -14,6 +14,12 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView txtScreenTitle;
 
+    public void setScreenTitle(String title) {
+        if (txtScreenTitle != null) {
+            txtScreenTitle.setText(title);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

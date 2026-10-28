@@ -40,13 +40,19 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
         holder.btnDeleteCat.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onDeleteClick(holder.getAdapterPosition());
+                int adapterPos = holder.getBindingAdapterPosition();
+                if (adapterPos != RecyclerView.NO_POSITION) {
+                    listener.onDeleteClick(adapterPos);
+                }
             }
         });
 
         holder.btnEditCat.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onEditClick(holder.getAdapterPosition());
+                int adapterPos = holder.getBindingAdapterPosition();
+                if (adapterPos != RecyclerView.NO_POSITION) {
+                    listener.onEditClick(adapterPos);
+                }
             }
         });
     }

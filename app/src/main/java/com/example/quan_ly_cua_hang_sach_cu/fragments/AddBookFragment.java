@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.example.quan_ly_cua_hang_sach_cu.DatabaseHelper;
+import com.example.quan_ly_cua_hang_sach_cu.MainActivity;
 import com.example.quan_ly_cua_hang_sach_cu.R;
 import com.example.quan_ly_cua_hang_sach_cu.models.BookModel;
 import com.example.quan_ly_cua_hang_sach_cu.models.CategoryModel;
@@ -159,9 +160,16 @@ public class AddBookFragment extends Fragment {
                 }
 
                 if (getActivity() != null) {
-                    BottomNavigationView bottomNav = getActivity().findViewById(R.id.bottom_navigation);
-                    if (bottomNav != null) {
-                        bottomNav.setSelectedItemId(R.id.nav_inventory);
+                    if (isEditing) {
+                        if (getActivity() instanceof MainActivity) {
+                            ((MainActivity) getActivity()).setScreenTitle("Kho sách");
+                        }
+                        requireActivity().getSupportFragmentManager().popBackStack();
+                    } else {
+                        BottomNavigationView bottomNav = getActivity().findViewById(R.id.bottom_navigation);
+                        if (bottomNav != null) {
+                            bottomNav.setSelectedItemId(R.id.nav_inventory);
+                        }
                     }
                 }
             }

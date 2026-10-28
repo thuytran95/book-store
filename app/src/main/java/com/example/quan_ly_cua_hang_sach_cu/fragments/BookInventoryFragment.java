@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.quan_ly_cua_hang_sach_cu.DatabaseHelper;
+import com.example.quan_ly_cua_hang_sach_cu.MainActivity;
 import com.example.quan_ly_cua_hang_sach_cu.R;
 import com.example.quan_ly_cua_hang_sach_cu.adapters.BookAdapter;
 import com.example.quan_ly_cua_hang_sach_cu.models.BookModel;
@@ -38,6 +39,7 @@ public class BookInventoryFragment extends Fragment {
         adapter = new BookAdapter(bookList, new BookAdapter.OnBookActionListener() {
             @Override
             public void onEditClick(int position) {
+                if (position == RecyclerView.NO_POSITION || position >= bookList.size()) return;
                 BookModel book = bookList.get(position);
                 Bundle bundle = new Bundle();
                 bundle.putInt("book_id", book.getId());
@@ -53,8 +55,13 @@ public class BookInventoryFragment extends Fragment {
                 AddBookFragment editFragment = new AddBookFragment();
                 editFragment.setArguments(bundle);
 
+                if (getActivity() instanceof MainActivity) {
+                    ((MainActivity) getActivity()).setScreenTitle("Chỉnh sửa sách");
+                }
+
                 requireActivity().getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, editFragment)
+                        .addToBackStack(null)
                         .commit();
             }
 

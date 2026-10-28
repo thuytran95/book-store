@@ -63,13 +63,19 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
 
         holder.btnEdit.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onEditClick(holder.getAdapterPosition());
+                int adapterPos = holder.getBindingAdapterPosition();
+                if (adapterPos != RecyclerView.NO_POSITION) {
+                    listener.onEditClick(adapterPos);
+                }
             }
         });
 
         holder.btnDelete.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onDeleteClick(holder.getAdapterPosition());
+                int adapterPos = holder.getBindingAdapterPosition();
+                if (adapterPos != RecyclerView.NO_POSITION) {
+                    listener.onDeleteClick(adapterPos);
+                }
             }
         });
     }

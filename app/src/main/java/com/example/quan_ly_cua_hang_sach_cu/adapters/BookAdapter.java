@@ -19,7 +19,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
 
     public interface OnBookActionListener {
         void onEditClick(int position);
-        void onDeleteClick(int position);
+        void onSellClick(int position);
     }
 
     public BookAdapter(List<Book> bookList, OnBookActionListener listener) {
@@ -41,8 +41,28 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
         holder.txtBookId.setText(book.getBookCode() != null ? book.getBookCode() : "MS-" + book.getId());
         holder.txtBookTitle.setText(book.getTitle() != null ? book.getTitle() : "");
         holder.txtAuthor.setText("Tác giả: " + (book.getAuthor() != null ? book.getAuthor() : "Đang cập nhật"));
+        holder.txtCoverBadge.setText(book.getConditionPercent() + "%");
         holder.txtCategoryTag.setText(book.getCategory() != null ? book.getCategory() : "Khác");
-        holder.txtCondition.setText((book.getCondition() != null ? book.getCondition() : "Tốt") + " (" + book.getConditionPercent() + "%)");
+        holder.txtCategoryTag.setBackgroundResource(R.drawable.bg_chip_yellow);
+        holder.txtCategoryTag.setTextColor(android.graphics.Color.parseColor("#78350F"));
+
+        // Static badge color based on condition string (Tốt = Green, Khá = Blue, Trung bình = Pink)
+        String condStr = book.getCondition() != null ? book.getCondition().trim() : "Tốt";
+        if (condStr.contains("Tốt") || condStr.contains("Mới")) {
+            holder.txtCondition.setBackgroundResource(R.drawable.bg_badge_green);
+            holder.txtCondition.setTextColor(android.graphics.Color.parseColor("#065F46"));
+        } else if (condStr.contains("Khá")) {
+            holder.txtCondition.setBackgroundResource(R.drawable.bg_badge_blue);
+            holder.txtCondition.setTextColor(android.graphics.Color.parseColor("#0369A1"));
+        } else if (condStr.contains("Trung bình") || condStr.contains("Kém")) {
+            holder.txtCondition.setBackgroundResource(R.drawable.bg_badge_pink);
+            holder.txtCondition.setTextColor(android.graphics.Color.parseColor("#9D174D"));
+        } else {
+            holder.txtCondition.setBackgroundResource(R.drawable.bg_badge_green);
+            holder.txtCondition.setTextColor(android.graphics.Color.parseColor("#065F46"));
+        }
+        holder.txtCondition.setText(condStr);
+
         holder.txtPrice.setText(book.getPrice() != null ? book.getPrice() : "0 đ");
 
         if (book.getOriginalPrice() != null && !book.getOriginalPrice().isEmpty()) {
@@ -77,11 +97,11 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
             }
         });
 
-        holder.btnDelete.setOnClickListener(v -> {
+        holder.btnSell.setOnClickListener(v -> {
             if (listener != null) {
                 int adapterPos = holder.getBindingAdapterPosition();
                 if (adapterPos != RecyclerView.NO_POSITION) {
-                    listener.onDeleteClick(adapterPos);
+                    listener.onSellClick(adapterPos);
                 }
             }
         });
@@ -93,21 +113,23 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
     }
 
     static class BookViewHolder extends RecyclerView.ViewHolder {
-        TextView txtBookId, txtBookTitle, txtAuthor, txtCategoryTag, txtCondition, txtPrice, txtOriginalPrice;
-        ImageView ivBookCover, btnEdit, btnDelete;
+        TextView txtBookId, txtBookTitle, txtAuthor, txtCoverBadge, txtCategoryTag, txtCondition, txtPrice, txtOriginalPrice;
+        ImageView ivBookCover;
+        View btnDetail, btnEdit, btnSell;
 
         public BookViewHolder(@NonNull View itemView) {
             super(itemView);
             txtBookId = itemView.findViewById(R.id.txtBookId);
             txtBookTitle = itemView.findViewById(R.id.txtBookTitle);
             txtAuthor = itemView.findViewById(R.id.txtAuthor);
+            txtCoverBadge = itemView.findViewById(R.id.txtCoverBadge);
             txtCategoryTag = itemView.findViewById(R.id.txtCategoryTag);
             txtCondition = itemView.findViewById(R.id.txtCondition);
             txtPrice = itemView.findViewById(R.id.txtPrice);
             txtOriginalPrice = itemView.findViewById(R.id.txtOriginalPrice);
             ivBookCover = itemView.findViewById(R.id.ivBookCover);
             btnEdit = itemView.findViewById(R.id.btnEdit);
-            btnDelete = itemView.findViewById(R.id.btnDelete);
+            btnSell = itemView.findViewById(R.id.btnSell);
         }
     }
 }

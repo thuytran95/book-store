@@ -11,150 +11,233 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:baselineAligned="false"
-        android:orientation="horizontal"
-        android:padding="14dp">
+        android:orientation="vertical">
 
-        <!-- Cover Placeholder -->
-        <FrameLayout
-            android:layout_width="65dp"
-            android:layout_height="95dp"
-            android:background="@color/surface_container">
-
-            <ImageView
-                android:id="@+id/ivBookCover"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:contentDescription="Book Cover"
-                android:src="@drawable/ic_book_open" />
-
-            <TextView
-                android:id="@+id/txtBookId"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:background="#99000000"
-                android:paddingHorizontal="4dp"
-                android:paddingVertical="1dp"
-                android:text="MS-001"
-                android:textColor="@color/white"
-                android:textSize="10sp" />
-        </FrameLayout>
-
-        <!-- Details -->
+        <!-- Top row: Cover + Details -->
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:padding="14dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/txtBookTitle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ellipsize="end"
-                    android:maxLines="2"
-                    android:text="Nỗi Buồn Chiến Tranh"
-                    android:textColor="@color/on_surface"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
+            <!-- Cover Placeholder -->
+            <FrameLayout
+                android:layout_width="65dp"
+                android:layout_height="95dp"
+                android:background="@color/surface_container">
 
                 <ImageView
-                    android:id="@+id/btnEdit"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:contentDescription="Edit"
-                    android:padding="2dp"
-                    android:src="@android:drawable/ic_menu_edit"
-                    app:tint="@color/on_surface_variant" />
-
-                <ImageView
-                    android:id="@+id/btnDelete"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:layout_marginStart="4dp"
-                    android:contentDescription="Delete"
-                    android:padding="2dp"
-                    android:src="@android:drawable/ic_menu_delete"
-                    app:tint="@color/error" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/txtAuthor"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="Tác giả: Bảo Ninh"
-                android:textColor="@color/on_surface_variant"
-                android:textSize="12sp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                    android:id="@+id/ivBookCover"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="Book Cover"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_book_open" />
 
                 <TextView
-                    android:id="@+id/txtCategoryTag"
+                    android:id="@+id/txtCoverBadge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_chip_yellow"
-                    android:paddingHorizontal="8dp"
-                    android:paddingVertical="2dp"
-                    android:text="Văn học"
-                    android:textColor="#78350F"
-                    android:textSize="10sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/txtCondition"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:background="@drawable/bg_chip_yellow"
-                    android:paddingHorizontal="8dp"
-                    android:paddingVertical="2dp"
-                    android:text="Tốt (85%)"
-                    android:textColor="#78350F"
-                    android:textSize="10sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:gravity="bottom"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/txtPrice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="65.000 đ"
+                    android:layout_gravity="bottom|end"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/bg_cover_badge"
+                    android:paddingHorizontal="4dp"
+                    android:paddingVertical="1dp"
+                    android:text="85%"
                     android:textColor="@color/primary"
-                    android:textSize="14sp"
+                    android:textSize="9sp"
                     android:textStyle="bold" />
+            </FrameLayout>
+
+            <!-- Details -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/txtBookTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:text="Nỗi Buồn Chiến Tranh"
+                        android:textColor="@color/on_surface"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txtBookId"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_chip"
+                        android:paddingHorizontal="6dp"
+                        android:paddingVertical="2dp"
+                        android:text="MS-00124"
+                        android:textColor="@color/outline"
+                        android:textSize="11sp" />
+                </LinearLayout>
 
                 <TextView
-                    android:id="@+id/txtOriginalPrice"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/txtAuthor"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="120.000 đ"
-                    android:textColor="@color/outline"
-                    android:textSize="11sp" />
+                    android:layout_marginTop="2dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="Tác giả: Bảo Ninh"
+                    android:textColor="@color/on_surface_variant"
+                    android:textSize="12sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/txtCategoryTag"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_chip_yellow"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="2dp"
+                        android:text="Văn học"
+                        android:textColor="#78350F"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txtCondition"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:background="@drawable/bg_badge_green"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="2dp"
+                        android:text="Tốt"
+                        android:textColor="#065F46"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="bottom"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/txtPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="65.000 đ"
+                        android:textColor="@color/primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txtOriginalPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="120.000 đ"
+                        android:textColor="@color/outline"
+                        android:textSize="11sp" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E8F0EC" />
+
+        <!-- Bottom Action Buttons Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:weightSum="2">
+
+            <!-- Edit Button -->
+            <LinearLayout
+                android:id="@+id/btnEdit"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_weight="1"
+                android:layout_marginHorizontal="2dp"
+                android:background="@drawable/bg_btn_rounded"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:contentDescription="Edit"
+                    android:src="@android:drawable/ic_menu_edit"
+                    app:tint="@color/on_surface" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="Sửa đổi"
+                    android:textColor="@color/on_surface"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Sell Button -->
+            <LinearLayout
+                android:id="@+id/btnSell"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:background="@drawable/bg_btn_primary_rounded"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:contentDescription="Sell"
+                    android:src="@android:drawable/ic_menu_today"
+                    app:tint="@color/white" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="Xuất bán"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+        </LinearLayout>
+
     </LinearLayout>
 </androidx.cardview.widget.CardView>

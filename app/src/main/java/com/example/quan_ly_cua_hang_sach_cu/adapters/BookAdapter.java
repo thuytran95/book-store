@@ -38,73 +38,92 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
     public void onBindViewHolder(@NonNull BookViewHolder holder, int position) {
         Book book = bookList.get(position);
         if (book == null) return;
-        holder.txtBookId.setText(book.getBookCode() != null ? book.getBookCode() : "MS-" + book.getId());
-        holder.txtBookTitle.setText(book.getTitle() != null ? book.getTitle() : "");
-        holder.txtAuthor.setText("Tác giả: " + (book.getAuthor() != null ? book.getAuthor() : "Đang cập nhật"));
-        holder.txtCoverBadge.setText(book.getConditionPercent() + "%");
-        holder.txtCategoryTag.setText(book.getCategory() != null ? book.getCategory() : "Khác");
-        holder.txtCategoryTag.setBackgroundResource(R.drawable.bg_chip_yellow);
-        holder.txtCategoryTag.setTextColor(android.graphics.Color.parseColor("#78350F"));
 
-        // Static badge color based on condition string (Tốt = Green, Khá = Blue, Trung bình = Pink)
-        String condStr = book.getCondition() != null ? book.getCondition().trim() : "Tốt";
-        if (condStr.contains("Tốt") || condStr.contains("Mới")) {
-            holder.txtCondition.setBackgroundResource(R.drawable.bg_badge_green);
-            holder.txtCondition.setTextColor(android.graphics.Color.parseColor("#065F46"));
-        } else if (condStr.contains("Khá")) {
-            holder.txtCondition.setBackgroundResource(R.drawable.bg_badge_blue);
-            holder.txtCondition.setTextColor(android.graphics.Color.parseColor("#0369A1"));
-        } else if (condStr.contains("Trung bình") || condStr.contains("Kém")) {
-            holder.txtCondition.setBackgroundResource(R.drawable.bg_badge_pink);
-            holder.txtCondition.setTextColor(android.graphics.Color.parseColor("#9D174D"));
-        } else {
-            holder.txtCondition.setBackgroundResource(R.drawable.bg_badge_green);
-            holder.txtCondition.setTextColor(android.graphics.Color.parseColor("#065F46"));
+        if (holder.txtBookId != null) {
+            holder.txtBookId.setText(book.getBookCode() != null ? book.getBookCode() : "MS-" + book.getId());
         }
-        holder.txtCondition.setText(condStr);
-
-        holder.txtPrice.setText(book.getPrice() != null ? book.getPrice() : "0 đ");
-
-        if (book.getOriginalPrice() != null && !book.getOriginalPrice().isEmpty()) {
-            holder.txtOriginalPrice.setVisibility(View.VISIBLE);
-            holder.txtOriginalPrice.setText(book.getOriginalPrice());
-        } else {
-            holder.txtOriginalPrice.setVisibility(View.GONE);
+        if (holder.txtBookTitle != null) {
+            holder.txtBookTitle.setText(book.getTitle() != null ? book.getTitle() : "");
+        }
+        if (holder.txtAuthor != null) {
+            holder.txtAuthor.setText("Tác giả: " + (book.getAuthor() != null ? book.getAuthor() : "Đang cập nhật"));
+        }
+        if (holder.txtCategoryTag != null) {
+            holder.txtCategoryTag.setText(book.getCategory() != null ? book.getCategory() : "Khác");
+            holder.txtCategoryTag.setBackgroundResource(R.drawable.bg_chip_yellow);
+            holder.txtCategoryTag.setTextColor(android.graphics.Color.parseColor("#78350F"));
         }
 
-        if (book.getImageUri() != null && !book.getImageUri().isEmpty()) {
-            try {
-                Uri uri = Uri.parse(book.getImageUri());
-                android.graphics.Bitmap bmp = com.example.quan_ly_cua_hang_sach_cu.utils.ImageUtils.decodeSampledBitmapFromUri(holder.itemView.getContext(), uri, 150, 200);
-                if (bmp != null) {
-                    holder.ivBookCover.setImageBitmap(bmp);
-                } else {
-                    holder.ivBookCover.setImageURI(uri);
+        if (holder.txtCondition != null) {
+            String condStr = book.getCondition() != null ? book.getCondition().trim() : "Tốt";
+            if (condStr.contains("Tốt") || condStr.contains("Mới")) {
+                holder.txtCondition.setBackgroundResource(R.drawable.bg_badge_green);
+                holder.txtCondition.setTextColor(android.graphics.Color.parseColor("#065F46"));
+            } else if (condStr.contains("Khá")) {
+                holder.txtCondition.setBackgroundResource(R.drawable.bg_badge_blue);
+                holder.txtCondition.setTextColor(android.graphics.Color.parseColor("#0369A1"));
+            } else if (condStr.contains("Trung bình") || condStr.contains("Kém")) {
+                holder.txtCondition.setBackgroundResource(R.drawable.bg_badge_pink);
+                holder.txtCondition.setTextColor(android.graphics.Color.parseColor("#9D174D"));
+            } else {
+                holder.txtCondition.setBackgroundResource(R.drawable.bg_badge_green);
+                holder.txtCondition.setTextColor(android.graphics.Color.parseColor("#065F46"));
+            }
+            holder.txtCondition.setText(condStr);
+        }
+
+        if (holder.txtPrice != null) {
+            holder.txtPrice.setText(book.getPrice() != null ? book.getPrice() : "0 đ");
+        }
+
+        if (holder.txtOriginalPrice != null) {
+            if (book.getOriginalPrice() != null && !book.getOriginalPrice().isEmpty()) {
+                holder.txtOriginalPrice.setVisibility(View.VISIBLE);
+                holder.txtOriginalPrice.setText(book.getOriginalPrice());
+            } else {
+                holder.txtOriginalPrice.setVisibility(View.GONE);
+            }
+        }
+
+        if (holder.ivBookCover != null) {
+            if (book.getImageUri() != null && !book.getImageUri().isEmpty()) {
+                try {
+                    Uri uri = Uri.parse(book.getImageUri());
+                    android.graphics.Bitmap bmp = com.example.quan_ly_cua_hang_sach_cu.utils.ImageUtils.decodeSampledBitmapFromUri(holder.itemView.getContext(), uri, 150, 200);
+                    if (bmp != null) {
+                        holder.ivBookCover.setImageBitmap(bmp);
+                    } else {
+                        holder.ivBookCover.setImageURI(uri);
+                    }
+                } catch (Exception e) {
+                    holder.ivBookCover.setImageResource(R.drawable.ic_book_open);
                 }
-            } catch (Exception e) {
+            } else {
                 holder.ivBookCover.setImageResource(R.drawable.ic_book_open);
             }
-        } else {
-            holder.ivBookCover.setImageResource(R.drawable.ic_book_open);
         }
 
-        holder.btnEdit.setOnClickListener(v -> {
-            if (listener != null) {
-                int adapterPos = holder.getBindingAdapterPosition();
-                if (adapterPos != RecyclerView.NO_POSITION) {
-                    listener.onEditClick(adapterPos);
+        if (holder.btnEdit != null) {
+            holder.btnEdit.setOnClickListener(v -> {
+                if (listener != null) {
+                    int adapterPos = holder.getBindingAdapterPosition();
+                    if (adapterPos != RecyclerView.NO_POSITION) {
+                        listener.onEditClick(adapterPos);
+                    }
                 }
-            }
-        });
+            });
+        }
 
-        holder.btnSell.setOnClickListener(v -> {
-            if (listener != null) {
-                int adapterPos = holder.getBindingAdapterPosition();
-                if (adapterPos != RecyclerView.NO_POSITION) {
-                    listener.onSellClick(adapterPos);
+        if (holder.btnSell != null) {
+            holder.btnSell.setOnClickListener(v -> {
+                if (listener != null) {
+                    int adapterPos = holder.getBindingAdapterPosition();
+                    if (adapterPos != RecyclerView.NO_POSITION) {
+                        listener.onSellClick(adapterPos);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
@@ -113,16 +132,15 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
     }
 
     static class BookViewHolder extends RecyclerView.ViewHolder {
-        TextView txtBookId, txtBookTitle, txtAuthor, txtCoverBadge, txtCategoryTag, txtCondition, txtPrice, txtOriginalPrice;
+        TextView txtBookId, txtBookTitle, txtAuthor, txtCategoryTag, txtCondition, txtPrice, txtOriginalPrice;
         ImageView ivBookCover;
-        View btnDetail, btnEdit, btnSell;
+        View btnEdit, btnSell;
 
         public BookViewHolder(@NonNull View itemView) {
             super(itemView);
             txtBookId = itemView.findViewById(R.id.txtBookId);
             txtBookTitle = itemView.findViewById(R.id.txtBookTitle);
             txtAuthor = itemView.findViewById(R.id.txtAuthor);
-            txtCoverBadge = itemView.findViewById(R.id.txtCoverBadge);
             txtCategoryTag = itemView.findViewById(R.id.txtCategoryTag);
             txtCondition = itemView.findViewById(R.id.txtCondition);
             txtPrice = itemView.findViewById(R.id.txtPrice);

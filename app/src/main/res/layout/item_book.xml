@@ -32,22 +32,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:contentDescription="Book Cover"
-                    android:scaleType="centerCrop"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_book_open" />
-
-                <TextView
-                    android:id="@+id/txtCoverBadge"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|end"
-                    android:layout_margin="2dp"
-                    android:background="@drawable/bg_cover_badge"
-                    android:paddingHorizontal="4dp"
-                    android:paddingVertical="1dp"
-                    android:text="85%"
-                    android:textColor="@color/primary"
-                    android:textSize="9sp"
-                    android:textStyle="bold" />
             </FrameLayout>
 
             <!-- Details -->

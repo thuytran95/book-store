@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_inventory"
-        android:icon="@drawable/ic_nav_book"
-        android:title="Kho sách" />
+        android:icon="@drawable/ic_nav_home"
+        android:title="Trang chủ" />
     <item
         android:id="@+id/nav_category"
         android:icon="@drawable/ic_nav_category"

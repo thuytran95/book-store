@@ -68,10 +68,15 @@ public class AddBookFragment extends Fragment {
         EditText edtOriginalPrice = view.findViewById(R.id.edtAddOriginalPrice);
         AutoCompleteTextView autoCompleteCategory = view.findViewById(R.id.autoCompleteCategory);
         AutoCompleteTextView autoCompleteCondition = view.findViewById(R.id.autoCompleteCondition);
+        Button btnCancel = view.findViewById(R.id.btnCancel);
         Button btnSave = view.findViewById(R.id.btnSaveBook);
 
         btnSelectImage.setOnClickListener(v -> imagePickerLauncher.launch("image/*"));
         ivBookImage.setOnClickListener(v -> imagePickerLauncher.launch("image/*"));
+
+        if (btnCancel != null) {
+            btnCancel.setOnClickListener(v -> navigateToHome());
+        }
 
         // 1. Load categories
         List<Category> categoryModels = dbHelper.getAllCategories();
@@ -88,7 +93,7 @@ public class AddBookFragment extends Fragment {
             categoryNames.add(cat.getName());
         }
 
-        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, categoryNames);
+        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, categoryNames);
         autoCompleteCategory.setAdapter(categoryAdapter);
         autoCompleteCategory.setOnClickListener(v -> autoCompleteCategory.showDropDown());
         autoCompleteCategory.setOnFocusChangeListener((v, hasFocus) -> {
@@ -101,7 +106,7 @@ public class AddBookFragment extends Fragment {
         conditionOptions.add("Khá");
         conditionOptions.add("Trung bình");
 
-        ArrayAdapter<String> conditionAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, conditionOptions);
+        ArrayAdapter<String> conditionAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, conditionOptions);
         autoCompleteCondition.setAdapter(conditionAdapter);
         autoCompleteCondition.setOnClickListener(v -> autoCompleteCondition.showDropDown());
         autoCompleteCondition.setOnFocusChangeListener((v, hasFocus) -> {
@@ -184,22 +189,33 @@ public class AddBookFragment extends Fragment {
                     Toast.makeText(getContext(), "Đã lưu sách thành công vào kho!", Toast.LENGTH_SHORT).show();
                 }
 
-                if (getActivity() != null) {
-                    if (isEditing) {
-                        if (getActivity() instanceof MainActivity) {
-                            ((MainActivity) getActivity()).setScreenTitle("Kho sách");
-                        }
-                        requireActivity().getSupportFragmentManager().popBackStack();
-                    } else {
-                        BottomNavigationView bottomNav = getActivity().findViewById(R.id.bottom_navigation);
-                        if (bottomNav != null) {
-                            bottomNav.setSelectedItemId(R.id.nav_inventory);
-                        }
-                    }
-                }
+                navigateToHome();
             }
         });
 
         return view;
+    }
+
+    private void navigateToHome() {
+        if (getActivity() != null) {
+            if (isEditing) {
+                if (getActivity() instanceof MainActivity) {
+                    ((MainActivity) getActivity()).setScreenTitle("Kho sách");
+                }
+                requireActivity().getSupportFragmentManager().popBackStack();
+            } else {
+                BottomNavigationView bottomNav = getActivity().findViewById(R.id.bottom_navigation);
+                if (bottomNav != null) {
+                    bottomNav.setSelectedItemId(R.id.nav_inventory);
+                } else {
+                    if (getActivity() instanceof MainActivity) {
+                        ((MainActivity) getActivity()).setScreenTitle("Kho sách");
+                    }
+                    requireActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, new BookInventoryFragment())
+                            .commit();
+                }
+            }
+        }
     }
 }

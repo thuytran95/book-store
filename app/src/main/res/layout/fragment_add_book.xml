@@ -12,7 +12,6 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Card Form Container -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -143,7 +142,7 @@
                     android:paddingHorizontal="12dp"
                     android:textSize="14sp" />
 
-                <!-- ISBN & Scan Button -->
+                <!-- ISBN -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -240,18 +239,43 @@
                     </LinearLayout>
                 </LinearLayout>
 
-                <!-- Submit Button -->
-                <Button
-                    android:id="@+id/btnSaveBook"
+                <!-- Action Buttons Row (Hủy & Lưu) -->
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="52dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
-                    android:backgroundTint="@color/primary"
-                    android:text="Lưu sách"
-                    android:textColor="@color/white"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    app:cornerRadius="16dp" />
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <Button
+                        android:id="@+id/btnCancel"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="52dp"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp"
+                        android:backgroundTint="@android:color/transparent"
+                        android:text="Hủy"
+                        android:textColor="@color/primary"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        app:cornerRadius="16dp"
+                        app:strokeColor="@color/primary"
+                        app:strokeWidth="1.5dp" />
+
+                    <Button
+                        android:id="@+id/btnSaveBook"
+                        android:layout_width="0dp"
+                        android:layout_height="52dp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="8dp"
+                        android:backgroundTint="@color/primary"
+                        android:text="Lưu sách"
+                        android:textColor="@color/white"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        app:cornerRadius="16dp" />
+                </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

@@ -26,13 +26,6 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Thông Tin Cuốn Sách"
-                    android:textColor="@color/on_surface"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
 
                 <!-- Title -->
                 <TextView
@@ -51,7 +44,7 @@
                     android:layout_marginTop="4dp"
                     android:autofillHints="name"
                     android:background="@drawable/bg_search_box"
-                    android:hint="Nhập tên sách cũ..."
+                    android:hint="Nhập tên sách"
                     android:inputType="text"
                     android:paddingHorizontal="12dp"
                     android:textSize="14sp" />
@@ -73,7 +66,7 @@
                     android:layout_marginTop="4dp"
                     android:autofillHints="name"
                     android:background="@drawable/bg_search_box"
-                    android:hint="Nhập tên tác giả..."
+                    android:hint="Nhập tên tác giả"
                     android:inputType="text"
                     android:paddingHorizontal="12dp"
                     android:textSize="14sp" />
@@ -83,7 +76,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:text="Mã ISBN / Mã Kho"
+                    android:text="Mã ISBN"
                     android:textColor="@color/on_surface_variant"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -102,7 +95,7 @@
                         android:layout_weight="1"
                         android:autofillHints="postalCode"
                         android:background="@drawable/bg_search_box"
-                        android:hint="VD: MS-00521"
+                        android:hint="MS-00521"
                         android:inputType="text"
                         android:paddingHorizontal="12dp"
                         android:textSize="14sp" />

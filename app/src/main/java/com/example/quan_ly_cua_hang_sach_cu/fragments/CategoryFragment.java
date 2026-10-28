@@ -34,10 +34,10 @@ public class CategoryFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         categoryList = new ArrayList<>();
-        categoryList.add(new CategoryModel("1", "Văn học cổ điển & Hiện đại", "VH", 420, 42.8f));
-        categoryList.add(new CategoryModel("2", "Khoa học & Vũ trụ", "KH", 215, 21.9f));
-        categoryList.add(new CategoryModel("3", "Lịch sử & Triết học", "LS", 185, 18.9f));
-        categoryList.add(new CategoryModel("4", "Tiểu sử & Danh nhân", "TS", 160, 16.4f));
+        categoryList.add(new CategoryModel("1", "Văn học cổ điển & Hiện đại"));
+        categoryList.add(new CategoryModel("2", "Khoa học & Vũ trụ"));
+        categoryList.add(new CategoryModel("3", "Lịch sử & Triết học"));
+        categoryList.add(new CategoryModel("4", "Tiểu sử & Danh nhân"));
 
         adapter = new CategoryAdapter(categoryList, new CategoryAdapter.OnCategoryActionListener() {
             @Override
@@ -74,14 +74,12 @@ public class CategoryFragment extends Fragment {
 
         TextView txtDialogTitle = dialogView.findViewById(R.id.txtDialogTitle);
         EditText edtName = dialogView.findViewById(R.id.edtDialogCatName);
-        EditText edtCode = dialogView.findViewById(R.id.edtDialogCatCode);
         Button btnCancel = dialogView.findViewById(R.id.btnCancelCat);
         Button btnSave = dialogView.findViewById(R.id.btnSaveCat);
 
         if (existingCategory != null) {
             txtDialogTitle.setText("Chỉnh Sửa Thể Loại");
             edtName.setText(existingCategory.getName());
-            edtCode.setText(existingCategory.getCode());
             btnSave.setText("Cập nhật");
         } else {
             txtDialogTitle.setText("Thêm Thể Loại Mới");
@@ -93,19 +91,15 @@ public class CategoryFragment extends Fragment {
         btnCancel.setOnClickListener(v -> dialog.dismiss());
         btnSave.setOnClickListener(v -> {
             String name = edtName.getText().toString().trim();
-            String code = edtCode.getText().toString().trim().toUpperCase();
 
-            if (name.isEmpty() || code.isEmpty()) {
-                Toast.makeText(getContext(), "Vui lòng nhập đầy đủ tên và mã thể loại!", Toast.LENGTH_SHORT).show();
+            if (name.isEmpty()) {
+                Toast.makeText(getContext(), "Vui lòng nhập tên thể loại!", Toast.LENGTH_SHORT).show();
             } else {
                 if (existingCategory != null) {
                     // Update existing
                     CategoryModel updated = new CategoryModel(
                             existingCategory.getId(),
-                            name,
-                            code,
-                            existingCategory.getCount(),
-                            existingCategory.getPercentage()
+                            name
                     );
                     categoryList.set(position, updated);
                     adapter.notifyItemChanged(position);
@@ -113,7 +107,7 @@ public class CategoryFragment extends Fragment {
                 } else {
                     // Add new
                     String id = String.valueOf(categoryList.size() + 1);
-                    categoryList.add(new CategoryModel(id, name, code, 0, 0.0f));
+                    categoryList.add(new CategoryModel(id, name));
                     adapter.notifyItemInserted(categoryList.size() - 1);
                     Toast.makeText(getContext(), "Đã thêm thể loại mới thành công!", Toast.LENGTH_SHORT).show();
                 }

@@ -36,9 +36,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     @Override
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
         CategoryModel cat = categoryList.get(position);
-        holder.txtCatCode.setText(cat.getCode());
         holder.txtCatName.setText(cat.getName());
-        holder.txtCatStats.setText(cat.getCount() + " cuốn sách (" + cat.getPercentage() + "%)");
 
         holder.btnDeleteCat.setOnClickListener(v -> {
             if (listener != null) {
@@ -59,14 +57,12 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     }
 
     static class CategoryViewHolder extends RecyclerView.ViewHolder {
-        TextView txtCatCode, txtCatName, txtCatStats;
+        TextView txtCatName;
         ImageView btnEditCat, btnDeleteCat;
 
         public CategoryViewHolder(@NonNull View itemView) {
             super(itemView);
-            txtCatCode = itemView.findViewById(R.id.txtCatCode);
             txtCatName = itemView.findViewById(R.id.txtCatName);
-            txtCatStats = itemView.findViewById(R.id.txtCatStats);
             btnEditCat = itemView.findViewById(R.id.btnEditCat);
             btnDeleteCat = itemView.findViewById(R.id.btnDeleteCat);
         }

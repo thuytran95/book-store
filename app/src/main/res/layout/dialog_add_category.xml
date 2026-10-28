@@ -37,27 +37,6 @@
         android:paddingHorizontal="14dp"
         android:textSize="14sp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:text="Mã viết tắt *"
-        android:textColor="@color/on_surface_variant"
-        android:textSize="12sp"
-        android:textStyle="bold" />
-
-    <EditText
-        android:id="@+id/edtDialogCatCode"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginTop="6dp"
-        android:autofillHints="name"
-        android:background="@drawable/bg_search_box"
-        android:hint="VD: VL"
-        android:inputType="text"
-        android:paddingHorizontal="14dp"
-        android:textSize="14sp" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -254,55 +254,8 @@ public class AddBookFragment extends Fragment {
             String selectedCategory = autoCompleteCategory.getText().toString().trim();
             String selectedCondition = autoCompleteCondition.getText().toString().trim();
 
-            boolean isValid = true;
-
-            if (tvErrorTitle != null) tvErrorTitle.setVisibility(View.GONE);
-            if (tvErrorAuthor != null) tvErrorAuthor.setVisibility(View.GONE);
-            if (tvErrorCategory != null) tvErrorCategory.setVisibility(View.GONE);
-            if (tvErrorCondition != null) tvErrorCondition.setVisibility(View.GONE);
-            if (tvErrorPrice != null) tvErrorPrice.setVisibility(View.GONE);
-
-            if (title.isEmpty()) {
-                if (tvErrorTitle != null) {
-                    tvErrorTitle.setText("Vui lòng nhập tên sách");
-                    tvErrorTitle.setVisibility(View.VISIBLE);
-                }
-                isValid = false;
-            }
-
-            if (author.isEmpty()) {
-                if (tvErrorAuthor != null) {
-                    tvErrorAuthor.setText("Vui lòng nhập tên tác giả");
-                    tvErrorAuthor.setVisibility(View.VISIBLE);
-                }
-                isValid = false;
-            }
-
-            if (selectedCategory.isEmpty()) {
-                if (tvErrorCategory != null) {
-                    tvErrorCategory.setText("Vui lòng chọn thể loại");
-                    tvErrorCategory.setVisibility(View.VISIBLE);
-                }
-                isValid = false;
-            }
-
-            if (selectedCondition.isEmpty()) {
-                if (tvErrorCondition != null) {
-                    tvErrorCondition.setText("Vui lòng chọn tình trạng sách");
-                    tvErrorCondition.setVisibility(View.VISIBLE);
-                }
-                isValid = false;
-            }
-
-            if (price.isEmpty()) {
-                if (tvErrorPrice != null) {
-                    tvErrorPrice.setText("Vui lòng nhập giá bán");
-                    tvErrorPrice.setVisibility(View.VISIBLE);
-                }
-                isValid = false;
-            }
-
-            if (!isValid) {
+            if (!validateInputs(title, author, selectedCategory, selectedCondition, price,
+                    tvErrorTitle, tvErrorAuthor, tvErrorCategory, tvErrorCondition, tvErrorPrice)) {
                 return;
             }
 
@@ -345,6 +298,69 @@ public class AddBookFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private boolean validateInputs(
+            String title,
+            String author,
+            String category,
+            String condition,
+            String price,
+            TextView tvErrorTitle,
+            TextView tvErrorAuthor,
+            TextView tvErrorCategory,
+            TextView tvErrorCondition,
+            TextView tvErrorPrice
+    ) {
+        boolean isValid = true;
+
+        if (tvErrorTitle != null) tvErrorTitle.setVisibility(View.GONE);
+        if (tvErrorAuthor != null) tvErrorAuthor.setVisibility(View.GONE);
+        if (tvErrorCategory != null) tvErrorCategory.setVisibility(View.GONE);
+        if (tvErrorCondition != null) tvErrorCondition.setVisibility(View.GONE);
+        if (tvErrorPrice != null) tvErrorPrice.setVisibility(View.GONE);
+
+        if (title.isEmpty()) {
+            if (tvErrorTitle != null) {
+                tvErrorTitle.setText("Vui lòng nhập tên sách");
+                tvErrorTitle.setVisibility(View.VISIBLE);
+            }
+            isValid = false;
+        }
+
+        if (author.isEmpty()) {
+            if (tvErrorAuthor != null) {
+                tvErrorAuthor.setText("Vui lòng nhập tên tác giả");
+                tvErrorAuthor.setVisibility(View.VISIBLE);
+            }
+            isValid = false;
+        }
+
+        if (category.isEmpty()) {
+            if (tvErrorCategory != null) {
+                tvErrorCategory.setText("Vui lòng chọn thể loại");
+                tvErrorCategory.setVisibility(View.VISIBLE);
+            }
+            isValid = false;
+        }
+
+        if (condition.isEmpty()) {
+            if (tvErrorCondition != null) {
+                tvErrorCondition.setText("Vui lòng chọn tình trạng sách");
+                tvErrorCondition.setVisibility(View.VISIBLE);
+            }
+            isValid = false;
+        }
+
+        if (price.isEmpty()) {
+            if (tvErrorPrice != null) {
+                tvErrorPrice.setText("Vui lòng nhập giá bán");
+                tvErrorPrice.setVisibility(View.VISIBLE);
+            }
+            isValid = false;
+        }
+
+        return isValid;
     }
 
     private void navigateToHome() {

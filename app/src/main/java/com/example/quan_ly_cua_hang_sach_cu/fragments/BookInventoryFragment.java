@@ -54,7 +54,7 @@ public class BookInventoryFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_book_inventory, container, false);
+        View view = inflater.inflate(R.layout.book_inventory, container, false);
 
         dbHelper = new DatabaseHelper(getContext());
 

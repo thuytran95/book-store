@@ -2,6 +2,9 @@ package com.example.quan_ly_cua_hang_sach_cu.fragments;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.Html;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +13,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -22,8 +26,10 @@ import com.example.quan_ly_cua_hang_sach_cu.R;
 import com.example.quan_ly_cua_hang_sach_cu.models.Book;
 import com.example.quan_ly_cua_hang_sach_cu.models.Category;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class AddBookFragment extends Fragment {
 
@@ -68,6 +74,25 @@ public class AddBookFragment extends Fragment {
         EditText edtOriginalPrice = view.findViewById(R.id.edtAddOriginalPrice);
         AutoCompleteTextView autoCompleteCategory = view.findViewById(R.id.autoCompleteCategory);
         AutoCompleteTextView autoCompleteCondition = view.findViewById(R.id.autoCompleteCondition);
+
+        TextView tvLabelTitle = view.findViewById(R.id.tvLabelTitle);
+        TextView tvLabelAuthor = view.findViewById(R.id.tvLabelAuthor);
+        TextView tvLabelCategory = view.findViewById(R.id.tvLabelCategory);
+        TextView tvLabelCondition = view.findViewById(R.id.tvLabelCondition);
+        TextView tvLabelPrice = view.findViewById(R.id.tvLabelPrice);
+
+        if (tvLabelTitle != null) tvLabelTitle.setText(Html.fromHtml("Tên sách <font color='#BA1A1A'>*</font>", Html.FROM_HTML_MODE_LEGACY));
+        if (tvLabelAuthor != null) tvLabelAuthor.setText(Html.fromHtml("Tác giả <font color='#BA1A1A'>*</font>", Html.FROM_HTML_MODE_LEGACY));
+        if (tvLabelCategory != null) tvLabelCategory.setText(Html.fromHtml("Thể loại <font color='#BA1A1A'>*</font>", Html.FROM_HTML_MODE_LEGACY));
+        if (tvLabelCondition != null) tvLabelCondition.setText(Html.fromHtml("Tình trạng sách <font color='#BA1A1A'>*</font>", Html.FROM_HTML_MODE_LEGACY));
+        if (tvLabelPrice != null) tvLabelPrice.setText(Html.fromHtml("Giá bán (đ) <font color='#BA1A1A'>*</font>", Html.FROM_HTML_MODE_LEGACY));
+
+        TextView tvErrorTitle = view.findViewById(R.id.tvErrorTitle);
+        TextView tvErrorAuthor = view.findViewById(R.id.tvErrorAuthor);
+        TextView tvErrorCategory = view.findViewById(R.id.tvErrorCategory);
+        TextView tvErrorCondition = view.findViewById(R.id.tvErrorCondition);
+        TextView tvErrorPrice = view.findViewById(R.id.tvErrorPrice);
+
         Button btnCancel = view.findViewById(R.id.btnCancel);
         Button btnSave = view.findViewById(R.id.btnSaveBook);
 
@@ -77,6 +102,62 @@ public class AddBookFragment extends Fragment {
         if (btnCancel != null) {
             btnCancel.setOnClickListener(v -> navigateToHome());
         }
+
+        // Setup TextChangeListeners to clear errors on typing
+        edtTitle.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (tvErrorTitle != null) tvErrorTitle.setVisibility(View.GONE);
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        edtAuthor.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (tvErrorAuthor != null) tvErrorAuthor.setVisibility(View.GONE);
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        edtPrice.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (tvErrorPrice != null) tvErrorPrice.setVisibility(View.GONE);
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        autoCompleteCategory.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (tvErrorCategory != null) tvErrorCategory.setVisibility(View.GONE);
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        autoCompleteCondition.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (tvErrorCondition != null) tvErrorCondition.setVisibility(View.GONE);
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
 
         // 1. Load categories
         List<Category> categoryModels = dbHelper.getAllCategories();
@@ -128,10 +209,17 @@ public class AddBookFragment extends Fragment {
             if (editBookCode != null) edtIsbn.setText(editBookCode);
 
             String price = getArguments().getString("price");
-            if (price != null) edtPrice.setText(price);
+            if (price != null) {
+                // Keep only numeric digits inside input
+                String cleanPrice = price.replaceAll("[^0-9]", "");
+                edtPrice.setText(cleanPrice);
+            }
 
             String origPrice = getArguments().getString("original_price");
-            if (origPrice != null) edtOriginalPrice.setText(origPrice);
+            if (origPrice != null) {
+                String cleanOrigPrice = origPrice.replaceAll("[^0-9]", "");
+                edtOriginalPrice.setText(cleanOrigPrice);
+            }
 
             String cat = getArguments().getString("category");
             if (cat != null) autoCompleteCategory.setText(cat, false);
@@ -166,31 +254,94 @@ public class AddBookFragment extends Fragment {
             String selectedCategory = autoCompleteCategory.getText().toString().trim();
             String selectedCondition = autoCompleteCondition.getText().toString().trim();
 
-            if (title.isEmpty() || author.isEmpty()) {
-                Toast.makeText(getContext(), "Vui lòng nhập tên sách và tác giả!", Toast.LENGTH_SHORT).show();
-            } else if (selectedCategory.isEmpty()) {
-                Toast.makeText(getContext(), "Vui lòng chọn thể loại!", Toast.LENGTH_SHORT).show();
-            } else if (selectedCondition.isEmpty()) {
-                Toast.makeText(getContext(), "Vui lòng chọn tình trạng sách!", Toast.LENGTH_SHORT).show();
-            } else {
-                String bookCode = isbn.isEmpty() ? (editBookCode != null ? editBookCode : "MS-" + (int)(Math.random() * 90000 + 10000)) : isbn;
-                String finalPrice = price.isEmpty() ? "50.000 đ" : (price.contains("đ") ? price : price + " đ");
-                String finalOrigPrice = originalPrice.isEmpty() ? null : (originalPrice.contains("đ") ? originalPrice : originalPrice + " đ");
+            boolean isValid = true;
 
-                int conditionPercent = selectedCondition.equals("Tốt") ? 90 : (selectedCondition.equals("Khá") ? 75 : 60);
+            if (tvErrorTitle != null) tvErrorTitle.setVisibility(View.GONE);
+            if (tvErrorAuthor != null) tvErrorAuthor.setVisibility(View.GONE);
+            if (tvErrorCategory != null) tvErrorCategory.setVisibility(View.GONE);
+            if (tvErrorCondition != null) tvErrorCondition.setVisibility(View.GONE);
+            if (tvErrorPrice != null) tvErrorPrice.setVisibility(View.GONE);
 
-                if (isEditing) {
-                    Book updatedBook = new Book(editBookId, bookCode, title, author, selectedCategory, selectedCondition, conditionPercent, finalPrice, finalOrigPrice, selectedImageUri);
-                    dbHelper.updateBook(updatedBook);
-                    Toast.makeText(getContext(), "Đã cập nhật sách thành công!", Toast.LENGTH_SHORT).show();
-                } else {
-                    Book newBook = new Book(bookCode, title, author, selectedCategory, selectedCondition, conditionPercent, finalPrice, finalOrigPrice, selectedImageUri);
-                    dbHelper.addBook(newBook);
-                    Toast.makeText(getContext(), "Đã lưu sách thành công vào kho!", Toast.LENGTH_SHORT).show();
+            if (title.isEmpty()) {
+                if (tvErrorTitle != null) {
+                    tvErrorTitle.setText("Vui lòng nhập tên sách");
+                    tvErrorTitle.setVisibility(View.VISIBLE);
                 }
-
-                navigateToHome();
+                isValid = false;
             }
+
+            if (author.isEmpty()) {
+                if (tvErrorAuthor != null) {
+                    tvErrorAuthor.setText("Vui lòng nhập tên tác giả");
+                    tvErrorAuthor.setVisibility(View.VISIBLE);
+                }
+                isValid = false;
+            }
+
+            if (selectedCategory.isEmpty()) {
+                if (tvErrorCategory != null) {
+                    tvErrorCategory.setText("Vui lòng chọn thể loại");
+                    tvErrorCategory.setVisibility(View.VISIBLE);
+                }
+                isValid = false;
+            }
+
+            if (selectedCondition.isEmpty()) {
+                if (tvErrorCondition != null) {
+                    tvErrorCondition.setText("Vui lòng chọn tình trạng sách");
+                    tvErrorCondition.setVisibility(View.VISIBLE);
+                }
+                isValid = false;
+            }
+
+            if (price.isEmpty()) {
+                if (tvErrorPrice != null) {
+                    tvErrorPrice.setText("Vui lòng nhập giá bán");
+                    tvErrorPrice.setVisibility(View.VISIBLE);
+                }
+                isValid = false;
+            }
+
+            if (!isValid) {
+                return;
+            }
+
+            String bookCode = isbn.isEmpty() ? (editBookCode != null ? editBookCode : "MS-" + (int)(Math.random() * 90000 + 10000)) : isbn;
+
+            // Format price string for DB display
+            String finalPrice;
+            try {
+                long pVal = Long.parseLong(price);
+                NumberFormat nf = NumberFormat.getInstance(new Locale("vi", "VN"));
+                finalPrice = nf.format(pVal) + " đ";
+            } catch (Exception e) {
+                finalPrice = price + " đ";
+            }
+
+            String finalOrigPrice = null;
+            if (!originalPrice.isEmpty()) {
+                try {
+                    long opVal = Long.parseLong(originalPrice);
+                    NumberFormat nf = NumberFormat.getInstance(new Locale("vi", "VN"));
+                    finalOrigPrice = nf.format(opVal) + " đ";
+                } catch (Exception e) {
+                    finalOrigPrice = originalPrice + " đ";
+                }
+            }
+
+            int conditionPercent = selectedCondition.equals("Tốt") ? 90 : (selectedCondition.equals("Khá") ? 75 : 60);
+
+            if (isEditing) {
+                Book updatedBook = new Book(editBookId, bookCode, title, author, selectedCategory, selectedCondition, conditionPercent, finalPrice, finalOrigPrice, selectedImageUri);
+                dbHelper.updateBook(updatedBook);
+                Toast.makeText(getContext(), "Đã cập nhật sách thành công!", Toast.LENGTH_SHORT).show();
+            } else {
+                Book newBook = new Book(bookCode, title, author, selectedCategory, selectedCondition, conditionPercent, finalPrice, finalOrigPrice, selectedImageUri);
+                dbHelper.addBook(newBook);
+                Toast.makeText(getContext(), "Đã lưu sách thành công vào kho!", Toast.LENGTH_SHORT).show();
+            }
+
+            navigateToHome();
         });
 
         return view;
@@ -200,7 +351,7 @@ public class AddBookFragment extends Fragment {
         if (getActivity() != null) {
             if (isEditing) {
                 if (getActivity() instanceof MainActivity) {
-                    ((MainActivity) getActivity()).setScreenTitle("Kho sách");
+                    ((MainActivity) getActivity()).setScreenTitle("Trang chủ");
                 }
                 requireActivity().getSupportFragmentManager().popBackStack();
             } else {
@@ -209,7 +360,7 @@ public class AddBookFragment extends Fragment {
                     bottomNav.setSelectedItemId(R.id.nav_inventory);
                 } else {
                     if (getActivity() instanceof MainActivity) {
-                        ((MainActivity) getActivity()).setScreenTitle("Kho sách");
+                        ((MainActivity) getActivity()).setScreenTitle("Trang chủ");
                     }
                     requireActivity().getSupportFragmentManager().beginTransaction()
                             .replace(R.id.fragment_container, new BookInventoryFragment())

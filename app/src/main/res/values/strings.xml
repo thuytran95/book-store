@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">quan-ly-cua-hang-sach-cu</string>
+    <string name="app_name">Quản Lý Cửa Hàng Sách Cũ</string>
+    <string name="label_title">Tên sách <font color="#BA1A1A">*</font></string>
+    <string name="label_author">Tác giả <font color="#BA1A1A">*</font></string>
+    <string name="label_category">Thể loại <font color="#BA1A1A">*</font></string>
+    <string name="label_condition">Tình trạng sách <font color="#BA1A1A">*</font></string>
+    <string name="label_price">Giá bán (đ) <font color="#BA1A1A">*</font></string>
 </resources>

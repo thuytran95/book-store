@@ -44,26 +44,26 @@
 
                     <Button
                         android:id="@+id/btnSelectImage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
                         android:backgroundTint="@android:color/transparent"
+                        android:text="Chọn ảnh từ thiết bị"
                         android:textColor="@color/primary"
                         android:textSize="15sp"
                         android:textStyle="bold"
                         app:cornerRadius="16dp"
                         app:strokeColor="@color/primary"
-                        app:strokeWidth="1.5dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:text="Chọn ảnh từ thiết bị"
-                        />
+                        app:strokeWidth="1.5dp" />
                 </LinearLayout>
 
                 <!-- Title -->
                 <TextView
+                    android:id="@+id/tvLabelTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:text="Tên sách *"
+                    android:text="@string/label_title"
                     android:textColor="@color/on_surface_variant"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -80,12 +80,22 @@
                     android:paddingHorizontal="12dp"
                     android:textSize="14sp" />
 
+                <TextView
+                    android:id="@+id/tvErrorTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textColor="@color/error"
+                    android:textSize="11sp"
+                    android:visibility="gone" />
+
                 <!-- Author -->
                 <TextView
+                    android:id="@+id/tvLabelAuthor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:text="Tác giả *"
+                    android:text="@string/label_author"
                     android:textColor="@color/on_surface_variant"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -102,12 +112,22 @@
                     android:paddingHorizontal="12dp"
                     android:textSize="14sp" />
 
+                <TextView
+                    android:id="@+id/tvErrorAuthor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textColor="@color/error"
+                    android:textSize="11sp"
+                    android:visibility="gone" />
+
                 <!-- Category Selection Input -->
                 <TextView
+                    android:id="@+id/tvLabelCategory"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:text="Thể loại *"
+                    android:text="@string/label_category"
                     android:textColor="@color/on_surface_variant"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -125,12 +145,22 @@
                     android:paddingHorizontal="12dp"
                     android:textSize="14sp" />
 
+                <TextView
+                    android:id="@+id/tvErrorCategory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textColor="@color/error"
+                    android:textSize="11sp"
+                    android:visibility="gone" />
+
                 <!-- Book Condition Selection Input -->
                 <TextView
+                    android:id="@+id/tvLabelCondition"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:text="Tình trạng sách *"
+                    android:text="@string/label_condition"
                     android:textColor="@color/on_surface_variant"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -147,6 +177,15 @@
                     android:inputType="none"
                     android:paddingHorizontal="12dp"
                     android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tvErrorCondition"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textColor="@color/error"
+                    android:textSize="11sp"
+                    android:visibility="gone" />
 
                 <!-- ISBN -->
                 <TextView
@@ -196,9 +235,10 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/tvLabelPrice"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Giá bán (đ) *"
+                            android:text="@string/label_price"
                             android:textColor="@color/on_surface_variant"
                             android:textSize="12sp"
                             android:textStyle="bold" />
@@ -214,6 +254,15 @@
                             android:inputType="number"
                             android:paddingHorizontal="12dp"
                             android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/tvErrorPrice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:textColor="@color/error"
+                            android:textSize="11sp"
+                            android:visibility="gone" />
                     </LinearLayout>
 
                     <LinearLayout

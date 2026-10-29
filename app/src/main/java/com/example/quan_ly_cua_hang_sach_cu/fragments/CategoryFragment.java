@@ -104,7 +104,7 @@ public class CategoryFragment extends Fragment {
             String name = edtName.getText().toString().trim();
 
             if (name.isEmpty()) {
-                Toast.makeText(getContext(), "Vui lòng nhập tên thể loại!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Vui lòng nhập tên thể loại", Toast.LENGTH_SHORT).show();
             } else {
                 if (existingCategory != null) {
                     existingCategory.setName(name);

@@ -73,13 +73,14 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
         }
 
         if (holder.txtPrice != null) {
-            holder.txtPrice.setText(book.getPrice() != null ? book.getPrice() : "0 đ");
+            holder.txtPrice.setText(formatPrice(book.getPrice()));
         }
 
         if (holder.txtOriginalPrice != null) {
-            if (book.getOriginalPrice() != null && !book.getOriginalPrice().isEmpty()) {
+            String origPrice = book.getOriginalPrice();
+            if (origPrice != null && !origPrice.trim().isEmpty() && !origPrice.equals("0")) {
                 holder.txtOriginalPrice.setVisibility(View.VISIBLE);
-                holder.txtOriginalPrice.setText(book.getOriginalPrice());
+                holder.txtOriginalPrice.setText(formatPrice(origPrice));
             } else {
                 holder.txtOriginalPrice.setVisibility(View.GONE);
             }
@@ -129,6 +130,23 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
     @Override
     public int getItemCount() {
         return bookList.size();
+    }
+
+    private String formatPrice(String priceStr) {
+        if (priceStr == null || priceStr.trim().isEmpty()) {
+            return "0 đ";
+        }
+        try {
+            String digits = priceStr.replaceAll("[^0-9]", "");
+            if (digits.isEmpty()) {
+                return priceStr;
+            }
+            long val = Long.parseLong(digits);
+            java.text.NumberFormat nf = java.text.NumberFormat.getInstance(java.util.Locale.forLanguageTag("vi-VN"));
+            return nf.format(val) + " đ";
+        } catch (Exception e) {
+            return priceStr;
+        }
     }
 
     static class BookViewHolder extends RecyclerView.ViewHolder {

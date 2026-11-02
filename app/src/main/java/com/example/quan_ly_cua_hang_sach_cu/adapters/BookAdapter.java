@@ -19,7 +19,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
 
     public interface OnBookActionListener {
         void onEditClick(int position);
-        void onSellClick(int position);
+        void onDeleteClick(int position);
     }
 
     public BookAdapter(List<Book> bookList, OnBookActionListener listener) {
@@ -114,12 +114,12 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
             });
         }
 
-        if (holder.btnSell != null) {
-            holder.btnSell.setOnClickListener(v -> {
+        if (holder.btnDelete != null) {
+            holder.btnDelete.setOnClickListener(v -> {
                 if (listener != null) {
                     int adapterPos = holder.getBindingAdapterPosition();
                     if (adapterPos != RecyclerView.NO_POSITION) {
-                        listener.onSellClick(adapterPos);
+                        listener.onDeleteClick(adapterPos);
                     }
                 }
             });
@@ -134,7 +134,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
     static class BookViewHolder extends RecyclerView.ViewHolder {
         TextView txtBookId, txtBookTitle, txtAuthor, txtCategoryTag, txtCondition, txtPrice, txtOriginalPrice;
         ImageView ivBookCover;
-        View btnEdit, btnSell;
+        View btnEdit, btnDelete;
 
         public BookViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -147,7 +147,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
             txtOriginalPrice = itemView.findViewById(R.id.txtOriginalPrice);
             ivBookCover = itemView.findViewById(R.id.ivBookCover);
             btnEdit = itemView.findViewById(R.id.btnEdit);
-            btnSell = itemView.findViewById(R.id.btnSell);
+            btnDelete = itemView.findViewById(R.id.btnDelete);
         }
     }
 }

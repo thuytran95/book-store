@@ -1,5 +1,6 @@
 package com.example.quan_ly_cua_hang_sach_cu.fragments;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -101,10 +102,23 @@ public class BookInventoryFragment extends Fragment {
             }
 
             @Override
-            public void onSellClick(int position) {
+            public void onDeleteClick(int position) {
                 if (position == RecyclerView.NO_POSITION || position >= filteredBooks.size()) return;
                 Book book = filteredBooks.get(position);
-                Toast.makeText(getContext(), "Đã xuất bán sách: " + book.getTitle() + " (" + book.getPrice() + ")", Toast.LENGTH_SHORT).show();
+                
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Xóa sách")
+                        .setMessage("Bạn có muốn xóa \"" + (book.getTitle() != null ? book.getTitle() : "sách này") + "\" không?")
+                        .setPositiveButton("Có", (dialog, which) -> {
+                            if (position >= filteredBooks.size()) return;
+                            dbHelper.deleteBook(book);
+                            filteredBooks.remove(position);
+                            allBooks.remove(book);
+                            adapter.notifyItemRemoved(position);
+                            Toast.makeText(getContext(), "Đã xóa sách: " + book.getTitle(), Toast.LENGTH_SHORT).show();
+                        })
+                        .setNegativeButton("Không", (dialog, which) -> dialog.dismiss())
+                        .show();
             }
         });
         recyclerView.setAdapter(adapter);

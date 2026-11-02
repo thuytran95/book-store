@@ -168,7 +168,7 @@
                 android:layout_height="36dp"
                 android:layout_weight="1"
                 android:layout_marginHorizontal="2dp"
-                android:background="@drawable/bg_btn_rounded"
+                android:background="@drawable/bg_btn_primary_rounded"
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?attr/selectableItemBackground"
@@ -180,26 +180,26 @@
                     android:layout_height="16dp"
                     android:contentDescription="Edit"
                     android:src="@android:drawable/ic_menu_edit"
-                    app:tint="@color/on_surface" />
+                    app:tint="@color/white" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
                     android:text="Sửa đổi"
-                    android:textColor="@color/on_surface"
+                    android:textColor="@color/white"
                     android:textSize="12sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <!-- Sell Button -->
+            <!-- Delete Button -->
             <LinearLayout
-                android:id="@+id/btnSell"
+                android:id="@+id/btnDelete"
                 android:layout_width="0dp"
                 android:layout_height="36dp"
                 android:layout_weight="1"
                 android:layout_marginStart="4dp"
-                android:background="@drawable/bg_btn_primary_rounded"
+                android:background="@drawable/bg_btn_danger_rounded"
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?attr/selectableItemBackground"
@@ -209,15 +209,15 @@
                 <ImageView
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:contentDescription="Sell"
-                    android:src="@android:drawable/ic_menu_today"
+                    android:contentDescription="Delete"
+                    android:src="@android:drawable/ic_menu_delete"
                     app:tint="@color/white" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
-                    android:text="Xuất bán"
+                    android:text="Xóa sách"
                     android:textColor="@color/white"
                     android:textSize="12sp"
                     android:textStyle="bold" />

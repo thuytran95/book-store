@@ -97,6 +97,19 @@ public class BookStore {
         return list;
     }
 
+    public boolean hasBooksInCategory(String categoryName) {
+        if (categoryName == null) return false;
+        SQLiteDatabase db = helper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + TABLE + " WHERE " + COLUMN_CATEGORY + " COLLATE NOCASE = ?", new String[]{categoryName});
+        int count = 0;
+        if (cursor.moveToFirst()) {
+            count = cursor.getInt(0);
+        }
+        cursor.close();
+        db.close();
+        return count > 0;
+    }
+
     private ContentValues bookValues(Book book) {
         ContentValues values = new ContentValues();
         values.put(COLUMN_CODE, book.getBookCode());

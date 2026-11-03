@@ -134,6 +134,7 @@ public class BookInventoryFragment extends Fragment {
 
     private void loadBooks() {
         allBooks = bookStore.getAllOrSeed();
+        allBooks.sort((b1, b2) -> Integer.compare(b2.getId(), b1.getId()));
         filteredBooks.clear();
         filteredBooks.addAll(allBooks);
     }

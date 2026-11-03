@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.example.quan_ly_cua_hang_sach_cu.BookStore;
 import com.example.quan_ly_cua_hang_sach_cu.CategoryStore;
 import com.example.quan_ly_cua_hang_sach_cu.DatabaseHelper;
 import com.example.quan_ly_cua_hang_sach_cu.R;
@@ -44,6 +45,13 @@ public class CategoryFragment extends Fragment {
             public void onDeleteClick(int position) {
                 if (position == RecyclerView.NO_POSITION || position >= categoryList.size()) return;
                 Category cat = categoryList.get(position);
+
+                BookStore bookStore = new BookStore(new DatabaseHelper(getContext()));
+                if (bookStore.hasBooksInCategory(cat.getName())) {
+                    Toast.makeText(getContext(), "Không thể xóa thể loại \"" + cat.getName() + "\" vì vẫn còn sách thuộc thể loại này!", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
                 new AlertDialog.Builder(getContext())
                         .setTitle("Xóa thể loại")
                         .setMessage("Bạn có chắc chắn muốn xóa thể loại \"" + cat.getName() + "\" không?")

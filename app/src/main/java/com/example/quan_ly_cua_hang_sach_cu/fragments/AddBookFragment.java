@@ -20,6 +20,8 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import com.example.quan_ly_cua_hang_sach_cu.BookStore;
+import com.example.quan_ly_cua_hang_sach_cu.CategoryStore;
 import com.example.quan_ly_cua_hang_sach_cu.DatabaseHelper;
 import com.example.quan_ly_cua_hang_sach_cu.MainActivity;
 import com.example.quan_ly_cua_hang_sach_cu.R;
@@ -33,7 +35,8 @@ import java.util.Locale;
 
 public class AddBookFragment extends Fragment {
 
-    private DatabaseHelper dbHelper;
+    private BookStore bookStore;
+    private CategoryStore categoryStore;
     private ImageView ivBookImage;
     private String selectedImageUri = null;
     private boolean isEditing = false;
@@ -63,7 +66,9 @@ public class AddBookFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.add_book, container, false);
 
-        dbHelper = new DatabaseHelper(getContext());
+        DatabaseHelper database = new DatabaseHelper(getContext());
+        bookStore = new BookStore(database);
+        categoryStore = new CategoryStore(database);
 
         ivBookImage = view.findViewById(R.id.ivBookImage);
         Button btnSelectImage = view.findViewById(R.id.btnSelectImage);
@@ -160,14 +165,7 @@ public class AddBookFragment extends Fragment {
         });
 
         // 1. Load categories
-        List<Category> categoryModels = dbHelper.getAllCategories();
-        if (categoryModels.isEmpty()) {
-            dbHelper.addCategory(new Category("Văn học cổ điển & Hiện đại"));
-            dbHelper.addCategory(new Category("Khoa học & Vũ trụ"));
-            dbHelper.addCategory(new Category("Lịch sử & Triết học"));
-            dbHelper.addCategory(new Category("Tiểu sử & Danh nhân"));
-            categoryModels = dbHelper.getAllCategories();
-        }
+        List<Category> categoryModels = categoryStore.getAllOrSeed();
 
         List<String> categoryNames = new ArrayList<>();
         for (Category cat : categoryModels) {
@@ -286,11 +284,11 @@ public class AddBookFragment extends Fragment {
 
             if (isEditing) {
                 Book updatedBook = new Book(editBookId, bookCode, title, author, selectedCategory, selectedCondition, conditionPercent, finalPrice, finalOrigPrice, selectedImageUri);
-                dbHelper.updateBook(updatedBook);
+                bookStore.updateBook(updatedBook);
                 Toast.makeText(getContext(), "Đã cập nhật sách thành công!", Toast.LENGTH_SHORT).show();
             } else {
                 Book newBook = new Book(bookCode, title, author, selectedCategory, selectedCondition, conditionPercent, finalPrice, finalOrigPrice, selectedImageUri);
-                dbHelper.addBook(newBook);
+                bookStore.addBook(newBook);
                 Toast.makeText(getContext(), "Đã lưu sách thành công vào kho!", Toast.LENGTH_SHORT).show();
             }
 

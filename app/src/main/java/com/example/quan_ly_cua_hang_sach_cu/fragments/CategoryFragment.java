@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.example.quan_ly_cua_hang_sach_cu.CategoryStore;
 import com.example.quan_ly_cua_hang_sach_cu.DatabaseHelper;
 import com.example.quan_ly_cua_hang_sach_cu.R;
 import com.example.quan_ly_cua_hang_sach_cu.adapters.CategoryAdapter;
@@ -24,26 +25,19 @@ public class CategoryFragment extends Fragment {
 
     private List<Category> categoryList;
     private CategoryAdapter adapter;
-    private DatabaseHelper dbHelper;
+    private CategoryStore categoryStore;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.category, container, false);
 
-        dbHelper = new DatabaseHelper(getContext());
+        categoryStore = new CategoryStore(new DatabaseHelper(getContext()));
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerViewCategories);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        categoryList = dbHelper.getAllCategories();
-        if (categoryList.isEmpty()) {
-            dbHelper.addCategory(new Category("Văn học cổ điển & Hiện đại"));
-            dbHelper.addCategory(new Category("Khoa học & Vũ trụ"));
-            dbHelper.addCategory(new Category("Lịch sử & Triết học"));
-            dbHelper.addCategory(new Category("Tiểu sử & Danh nhân"));
-            categoryList = dbHelper.getAllCategories();
-        }
+        categoryList = categoryStore.getAllOrSeed();
 
         adapter = new CategoryAdapter(categoryList, new CategoryAdapter.OnCategoryActionListener() {
             @Override
@@ -55,7 +49,7 @@ public class CategoryFragment extends Fragment {
                         .setMessage("Bạn có chắc chắn muốn xóa thể loại \"" + cat.getName() + "\" không?")
                         .setPositiveButton("Xóa", (dialog, which) -> {
                             if (position >= categoryList.size()) return;
-                            dbHelper.deleteCategory(cat);
+                            categoryStore.deleteCategory(cat);
                             categoryList.remove(position);
                             adapter.notifyItemRemoved(position);
                             Toast.makeText(getContext(), "Đã xóa thể loại thành công!", Toast.LENGTH_SHORT).show();
@@ -108,7 +102,7 @@ public class CategoryFragment extends Fragment {
             } else {
                 if (existingCategory != null) {
                     existingCategory.setName(name);
-                    dbHelper.updateCategory(existingCategory);
+                    categoryStore.updateCategory(existingCategory);
                     if (position >= 0 && position < categoryList.size()) {
                         categoryList.set(position, existingCategory);
                         adapter.notifyItemChanged(position);
@@ -116,9 +110,9 @@ public class CategoryFragment extends Fragment {
                     Toast.makeText(getContext(), "Đã cập nhật thể loại thành công!", Toast.LENGTH_SHORT).show();
                 } else {
                     Category newCat = new Category(name);
-                    dbHelper.addCategory(newCat);
+                    categoryStore.addCategory(newCat);
                     categoryList.clear();
-                    categoryList.addAll(dbHelper.getAllCategories());
+                    categoryList.addAll(categoryStore.getAllCategories());
                     adapter.notifyDataSetChanged();
                     Toast.makeText(getContext(), "Đã thêm thể loại mới thành công!", Toast.LENGTH_SHORT).show();
                 }

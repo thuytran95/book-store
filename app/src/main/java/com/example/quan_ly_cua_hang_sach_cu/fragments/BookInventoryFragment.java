@@ -20,6 +20,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.example.quan_ly_cua_hang_sach_cu.BookStore;
+import com.example.quan_ly_cua_hang_sach_cu.CategoryStore;
 import com.example.quan_ly_cua_hang_sach_cu.DatabaseHelper;
 import com.example.quan_ly_cua_hang_sach_cu.MainActivity;
 import com.example.quan_ly_cua_hang_sach_cu.R;
@@ -36,7 +38,8 @@ import java.util.Locale;
 
 public class BookInventoryFragment extends Fragment {
 
-    private DatabaseHelper dbHelper;
+    private BookStore bookStore;
+    private CategoryStore categoryStore;
     private List<Book> allBooks = new ArrayList<>();
     private List<Book> filteredBooks = new ArrayList<>();
     private BookAdapter adapter;
@@ -57,7 +60,9 @@ public class BookInventoryFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.book_inventory, container, false);
 
-        dbHelper = new DatabaseHelper(getContext());
+        DatabaseHelper database = new DatabaseHelper(getContext());
+        bookStore = new BookStore(database);
+        categoryStore = new CategoryStore(database);
 
         edtSearch = view.findViewById(R.id.edtSearch);
         btnOpenFilter = view.findViewById(R.id.btnOpenFilter);
@@ -111,7 +116,7 @@ public class BookInventoryFragment extends Fragment {
                         .setMessage("Bạn có muốn xóa \"" + (book.getTitle() != null ? book.getTitle() : "sách này") + "\" không?")
                         .setPositiveButton("Có", (dialog, which) -> {
                             if (position >= filteredBooks.size()) return;
-                            dbHelper.deleteBook(book);
+                            bookStore.deleteBook(book);
                             filteredBooks.remove(position);
                             allBooks.remove(book);
                             adapter.notifyItemRemoved(position);
@@ -129,14 +134,7 @@ public class BookInventoryFragment extends Fragment {
     }
 
     private void loadBooks() {
-        allBooks = dbHelper.getAllBooks();
-        if (allBooks.isEmpty()) {
-            dbHelper.addBook(new Book("MS-00124", "Nỗi Buồn Chiến Tranh", "Bảo Ninh", "Văn học", "Tốt", 85, "65.000 đ", "120.000 đ", null));
-            dbHelper.addBook(new Book("MS-00208", "Vũ Trụ Trong Vỏ Hạt Dẻ", "Stephen Hawking", "Khoa học", "Rất mới", 95, "88.000 đ", null, null));
-            dbHelper.addBook(new Book("MS-00315", "Steve Jobs - Tiểu Sử Chính Thức", "Walter Isaacson", "Tiểu sử", "Khá", 70, "95.000 đ", "190.000 đ", null));
-            dbHelper.addBook(new Book("MS-00412", "Dế Mèn Phiêu Lưu Ký", "Tô Hoài", "Văn học", "Trung bình", 80, "45.000 đ", "85.000 đ", null));
-            allBooks = dbHelper.getAllBooks();
-        }
+        allBooks = bookStore.getAllOrSeed();
         filteredBooks = new ArrayList<>(allBooks);
     }
 
@@ -229,7 +227,7 @@ public class BookInventoryFragment extends Fragment {
         spinnerCondition.setAdapter(condAdapter);
 
         // Fetch categories dynamically from database
-        List<Category> dbCategories = dbHelper.getAllCategories();
+        List<Category> dbCategories = categoryStore.getAllCategories();
         List<String> categoryList = new ArrayList<>();
         categoryList.add("Tất cả thể loại");
         for (Category cat : dbCategories) {

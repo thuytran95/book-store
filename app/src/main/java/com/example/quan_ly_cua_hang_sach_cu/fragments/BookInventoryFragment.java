@@ -30,7 +30,6 @@ import com.example.quan_ly_cua_hang_sach_cu.models.Book;
 import com.example.quan_ly_cua_hang_sach_cu.models.Category;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.chip.Chip;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,14 +45,11 @@ public class BookInventoryFragment extends Fragment {
 
     private EditText edtSearch;
     private ImageButton btnOpenFilter;
-    private Chip chipAll, chipGoodUnder100k, chipLiterature, chipScience, chipBiography;
-
     // Filter state
     private int maxPriceFilter = 1000000;
     private String conditionFilter = "all";
     private String categoryFilter = "all";
     private String searchQuery = "";
-    private String activeChip = "all";
 
     @Nullable
     @Override
@@ -66,11 +62,6 @@ public class BookInventoryFragment extends Fragment {
 
         edtSearch = view.findViewById(R.id.edtSearch);
         btnOpenFilter = view.findViewById(R.id.btnOpenFilter);
-        chipAll = view.findViewById(R.id.chipAll);
-        chipGoodUnder100k = view.findViewById(R.id.chipGoodUnder100k);
-        chipLiterature = view.findViewById(R.id.chipLiterature);
-        chipScience = view.findViewById(R.id.chipScience);
-        chipBiography = view.findViewById(R.id.chipBiography);
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerViewBooks);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -127,16 +118,27 @@ public class BookInventoryFragment extends Fragment {
             }
         });
         recyclerView.setAdapter(adapter);
+        applyFilters();
 
         setupListeners();
 
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadBooks();
+        applyFilters();
+    }
+
     private void loadBooks() {
         allBooks = bookStore.getAllOrSeed();
-        filteredBooks = new ArrayList<>(allBooks);
+        filteredBooks.clear();
+        filteredBooks.addAll(allBooks);
     }
+
+
 
     private void setupListeners() {
         edtSearch.addTextChangedListener(new TextWatcher() {
@@ -157,49 +159,8 @@ public class BookInventoryFragment extends Fragment {
             btnOpenFilter.setOnClickListener(v -> showFilterDialog());
         }
 
-        View.OnClickListener chipListener = v -> {
-            resetChipsState();
-            Chip c = (Chip) v;
-            c.setChecked(true);
-            c.setChipBackgroundColorResource(R.color.primary);
-            c.setTextColor(getResources().getColor(android.R.color.white, null));
-
-            if (v.getId() == R.id.chipAll) {
-                activeChip = "all";
-                categoryFilter = "all";
-                conditionFilter = "all";
-            } else if (v.getId() == R.id.chipGoodUnder100k) {
-                activeChip = "good_under_100k";
-            } else if (v.getId() == R.id.chipLiterature) {
-                activeChip = "category";
-                categoryFilter = "Văn học";
-            } else if (v.getId() == R.id.chipScience) {
-                activeChip = "category";
-                categoryFilter = "Khoa học";
-            } else if (v.getId() == R.id.chipBiography) {
-                activeChip = "category";
-                categoryFilter = "Tiểu sử";
-            }
-            applyFilters();
-        };
-
-        if (chipAll != null) chipAll.setOnClickListener(chipListener);
-        if (chipGoodUnder100k != null) chipGoodUnder100k.setOnClickListener(chipListener);
-        if (chipLiterature != null) chipLiterature.setOnClickListener(chipListener);
-        if (chipScience != null) chipScience.setOnClickListener(chipListener);
-        if (chipBiography != null) chipBiography.setOnClickListener(chipListener);
     }
 
-    private void resetChipsState() {
-        Chip[] chips = {chipAll, chipGoodUnder100k, chipLiterature, chipScience, chipBiography};
-        for (Chip c : chips) {
-            if (c != null) {
-                c.setChecked(false);
-                c.setChipBackgroundColorResource(R.color.surface);
-                c.setTextColor(getResources().getColor(R.color.on_surface, null));
-            }
-        }
-    }
 
     private void showFilterDialog() {
         View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_filter, null);
@@ -295,22 +256,17 @@ public class BookInventoryFragment extends Fragment {
 
     private void applyFilters() {
         filteredBooks.clear();
+        String normalizedQuery = removeDiacritics(searchQuery);
         for (Book book : allBooks) {
             boolean matchSearch = true;
-            if (searchQuery != null && !searchQuery.isEmpty()) {
-                String title = book.getTitle() != null ? book.getTitle().toLowerCase(Locale.ROOT) : "";
-                String author = book.getAuthor() != null ? book.getAuthor().toLowerCase(Locale.ROOT) : "";
-                String code = book.getBookCode() != null ? book.getBookCode().toLowerCase(Locale.ROOT) : "";
-                matchSearch = title.contains(searchQuery) || author.contains(searchQuery) || code.contains(searchQuery);
+            if (normalizedQuery != null && !normalizedQuery.isEmpty()) {
+                String title = removeDiacritics(book.getTitle());
+                String author = removeDiacritics(book.getAuthor());
+                String code = removeDiacritics(book.getBookCode());
+                matchSearch = title.contains(normalizedQuery) || author.contains(normalizedQuery) || code.contains(normalizedQuery);
             }
 
-            boolean matchesChip = true;
             int price = parsePrice(book.getPrice());
-            if ("good_under_100k".equals(activeChip)) {
-                matchesChip = (book.getConditionPercent() >= 80 && price < 100000);
-            } else if ("category".equals(activeChip)) {
-                matchesChip = (categoryFilter.equals("all") || (book.getCategory() != null && book.getCategory().equalsIgnoreCase(categoryFilter)));
-            }
 
             boolean matchesPrice = (price <= maxPriceFilter);
 
@@ -327,7 +283,7 @@ public class BookInventoryFragment extends Fragment {
                 matchesCategory = (book.getCategory() != null && book.getCategory().equalsIgnoreCase(categoryFilter));
             }
 
-            if (matchSearch && matchesChip && matchesPrice && matchesCondition && matchesCategory) {
+            if (matchSearch && matchesPrice && matchesCondition && matchesCategory) {
                 filteredBooks.add(book);
             }
         }
@@ -346,5 +302,12 @@ public class BookInventoryFragment extends Fragment {
         } catch (NumberFormatException e) {
             return 0;
         }
+    }
+
+    private String removeDiacritics(String str) {
+        if (str == null) return "";
+        String nfdNormalizedString = java.text.Normalizer.normalize(str, java.text.Normalizer.Form.NFD);
+        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        return pattern.matcher(nfdNormalizedString).replaceAll("").toLowerCase(Locale.ROOT);
     }
 }

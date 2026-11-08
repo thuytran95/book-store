@@ -75,21 +75,28 @@
             android:id="@+id/txtPriceRangeLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Khoảng giá (VNĐ): 50.000 đ - 500.000 đ"
+            android:text="Khoảng giá (VNĐ): Tất cả"
             android:textColor="@color/on_surface"
             android:textSize="15sp"
             android:textStyle="bold" />
 
-        <SeekBar
-            android:id="@+id/seekBarPrice"
+        <!-- Slider khoảng giá 2 đầu: 0 đ -> 1.000.000 đ, mỗi bước 50.000 đ -->
+        <com.google.android.material.slider.RangeSlider
+            android:id="@+id/sliderPrice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:max="1000000"
-            android:paddingVertical="8dp"
-            android:progress="500000"
-            android:progressTint="@color/primary"
-            android:thumbTint="@color/primary" />
+            android:layout_marginTop="8dp"
+            android:stepSize="50000"
+            android:valueFrom="0"
+            android:valueTo="1000000"
+            app:values="@array/price_range_default"
+            app:labelBehavior="floating"
+            app:thumbColor="@color/primary"
+            app:tickVisible="true"
+            app:tickColorActive="@color/primary_container"
+            app:tickColorInactive="@color/primary"
+            app:trackColorActive="@color/primary"
+            app:trackColorInactive="@color/surface_container" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -101,7 +108,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="50.000 đ"
+                android:text="0 đ"
                 android:textColor="@color/outline"
                 android:textSize="12sp" />
 

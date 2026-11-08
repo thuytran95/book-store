@@ -11,7 +11,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +29,7 @@ import com.example.quan_ly_cua_hang_sach_cu.models.Book;
 import com.example.quan_ly_cua_hang_sach_cu.models.Category;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.slider.RangeSlider;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,11 +46,26 @@ public class BookInventoryFragment extends Fragment {
     private EditText edtSearch;
     private ImageButton btnOpenFilter;
     private ImageButton btnClearFilter;
+    // Khoảng giá của slider lọc
+    private static final int MIN_PRICE = 0;
+    private static final int MAX_PRICE = 1000000;
+    private static final int PRICE_STEP = 50000;
+
     // Filter state
-    private int maxPriceFilter = 1000000;
+    private int minPriceFilter = MIN_PRICE;
+    private int maxPriceFilter = MAX_PRICE;
     private String conditionFilter = "all";
     private String categoryFilter = "all";
     private String searchQuery = "";
+
+    public static final String RESULT_CLEAR_FILTER = "clear_filter";
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getParentFragmentManager().setFragmentResultListener(RESULT_CLEAR_FILTER, this,
+                (requestKey, result) -> resetFilters());
+    }
 
     @Nullable
     @Override
@@ -164,9 +179,7 @@ public class BookInventoryFragment extends Fragment {
 
         if (btnClearFilter != null) {
             btnClearFilter.setOnClickListener(v -> {
-                maxPriceFilter = 1000000;
-                conditionFilter = "all";
-                categoryFilter = "all";
+                resetFilters();
                 applyFilters();
                 Toast.makeText(getContext(), "Đã xóa bộ lọc", Toast.LENGTH_SHORT).show();
             });
@@ -188,7 +201,7 @@ public class BookInventoryFragment extends Fragment {
         }
 
         TextView txtPriceRangeLabel = dialogView.findViewById(R.id.txtPriceRangeLabel);
-        SeekBar seekBarPrice = dialogView.findViewById(R.id.seekBarPrice);
+        RangeSlider sliderPrice = dialogView.findViewById(R.id.sliderPrice);
         Spinner spinnerCondition = dialogView.findViewById(R.id.spinnerCondition);
         Spinner spinnerCategory = dialogView.findViewById(R.id.spinnerCategory);
         Button btnResetFilter = dialogView.findViewById(R.id.btnResetFilter);
@@ -212,42 +225,36 @@ public class BookInventoryFragment extends Fragment {
         String[] categories = categoryList.toArray(new String[0]);
         ArrayAdapter<String> catAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, categories);
         spinnerCategory.setAdapter(catAdapter);
-        final int[] pendingMaxPrice = {maxPriceFilter};
+        final int[] pendingPrice = {minPriceFilter, maxPriceFilter};
 
-        // Set current filter values
-        seekBarPrice.setProgress(maxPriceFilter);
-        NumberFormat nf = NumberFormat.getInstance(new Locale("vi", "VN"));
-        txtPriceRangeLabel.setText("Khoảng giá (VNĐ): 50.000 đ - " + nf.format(maxPriceFilter) + " đ");
+        sliderPrice.setLabelFormatter(value -> formatPrice((int) value));
+        sliderPrice.setValues(snapToPriceStep(minPriceFilter), snapToPriceStep(maxPriceFilter));
+        txtPriceRangeLabel.setText(priceRangeLabel(minPriceFilter, maxPriceFilter));
         spinnerCondition.setSelection(conditionSpinnerPosition());
         int currentCatPos = categoryList.indexOf(categoryFilter);
         spinnerCategory.setSelection(currentCatPos > 0 ? currentCatPos : 0);
 
-        seekBarPrice.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                pendingMaxPrice[0] = Math.max(progress, 50000);
-                txtPriceRangeLabel.setText("Khoảng giá (VNĐ): 50.000 đ - " + nf.format(pendingMaxPrice[0]) + " đ");
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
+        sliderPrice.addOnChangeListener((slider, value, fromUser) -> {
+            List<Float> values = slider.getValues();
+            pendingPrice[0] = Math.round(values.get(0));
+            pendingPrice[1] = Math.round(values.get(1));
+            txtPriceRangeLabel.setText(priceRangeLabel(pendingPrice[0], pendingPrice[1]));
         });
 
         btnCloseFilter.setOnClickListener(v -> dialog.dismiss());
 
         btnResetFilter.setOnClickListener(v -> {
-            pendingMaxPrice[0] = 1000000;
-            seekBarPrice.setProgress(1000000);
+            pendingPrice[0] = MIN_PRICE;
+            pendingPrice[1] = MAX_PRICE;
+            sliderPrice.setValues((float) MIN_PRICE, (float) MAX_PRICE);
             spinnerCondition.setSelection(0);
             spinnerCategory.setSelection(0);
-            txtPriceRangeLabel.setText("Khoảng giá (VNĐ): 50.000 đ - 1.000.000 đ");
+            txtPriceRangeLabel.setText(priceRangeLabel(MIN_PRICE, MAX_PRICE));
         });
 
         btnApplyFilter.setOnClickListener(v -> {
-            maxPriceFilter = pendingMaxPrice[0];
+            minPriceFilter = pendingPrice[0];
+            maxPriceFilter = pendingPrice[1];
 
             int condPos = spinnerCondition.getSelectedItemPosition();
             if (condPos == 1) conditionFilter = "good";
@@ -284,7 +291,9 @@ public class BookInventoryFragment extends Fragment {
 
             int price = parsePrice(book.getPrice());
 
-            boolean matchesPrice = (price <= maxPriceFilter);
+            // Đầu trên ở mức tối đa nghĩa là "không giới hạn trên"
+            boolean matchesPrice = price >= minPriceFilter
+                    && (maxPriceFilter >= MAX_PRICE || price <= maxPriceFilter);
 
             boolean matchesCondition = true;
             if (!"all".equals(conditionFilter)) {
@@ -310,14 +319,42 @@ public class BookInventoryFragment extends Fragment {
         updateClearFilterButton();
     }
 
+    /** Đưa bộ lọc giá / tình trạng / thể loại về mặc định (không đụng ô tìm kiếm). */
+    private void resetFilters() {
+        minPriceFilter = MIN_PRICE;
+        maxPriceFilter = MAX_PRICE;
+        conditionFilter = "all";
+        categoryFilter = "all";
+    }
+
     private boolean isFilterActive() {
-        return maxPriceFilter < 1000000 || !"all".equals(conditionFilter) || !"all".equals(categoryFilter);
+        return minPriceFilter > MIN_PRICE || maxPriceFilter < MAX_PRICE
+                || !"all".equals(conditionFilter) || !"all".equals(categoryFilter);
+    }
+
+    private String formatPrice(int price) {
+        return NumberFormat.getInstance(new Locale("vi", "VN")).format(price) + " đ";
+    }
+
+    private String priceRangeLabel(int min, int max) {
+        if (min <= MIN_PRICE && max >= MAX_PRICE) {
+            return "Khoảng giá (VNĐ): Tất cả";
+        }
+        String upper = max >= MAX_PRICE ? formatPrice(MAX_PRICE) + " trở lên" : formatPrice(max);
+        return "Khoảng giá (VNĐ): " + formatPrice(min) + " - " + upper;
     }
 
     private void updateClearFilterButton() {
         if (btnClearFilter != null) {
             btnClearFilter.setVisibility(isFilterActive() ? View.VISIBLE : View.GONE);
         }
+    }
+
+    /** Làm tròn giá về bội số PRICE_STEP, giới hạn trong [MIN_PRICE, MAX_PRICE]. */
+    private float snapToPriceStep(int price) {
+        int clamped = Math.max(MIN_PRICE, Math.min(MAX_PRICE, price));
+        int steps = Math.round((clamped - MIN_PRICE) / (float) PRICE_STEP);
+        return MIN_PRICE + steps * PRICE_STEP;
     }
 
     private int conditionSpinnerPosition() {

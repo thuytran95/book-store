@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Giá trị mặc định 2 đầu của slider khoảng giá trong bộ lọc -->
+    <array name="price_range_default">
+        <item>0</item>
+        <item>1000000</item>
+    </array>
+</resources>

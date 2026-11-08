@@ -45,6 +45,7 @@ public class BookInventoryFragment extends Fragment {
 
     private EditText edtSearch;
     private ImageButton btnOpenFilter;
+    private ImageButton btnClearFilter;
     // Filter state
     private int maxPriceFilter = 1000000;
     private String conditionFilter = "all";
@@ -62,6 +63,7 @@ public class BookInventoryFragment extends Fragment {
 
         edtSearch = view.findViewById(R.id.edtSearch);
         btnOpenFilter = view.findViewById(R.id.btnOpenFilter);
+        btnClearFilter = view.findViewById(R.id.btnClearFilter);
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerViewBooks);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -158,6 +160,16 @@ public class BookInventoryFragment extends Fragment {
 
         if (btnOpenFilter != null) {
             btnOpenFilter.setOnClickListener(v -> showFilterDialog());
+        }
+
+        if (btnClearFilter != null) {
+            btnClearFilter.setOnClickListener(v -> {
+                maxPriceFilter = 1000000;
+                conditionFilter = "all";
+                categoryFilter = "all";
+                applyFilters();
+                Toast.makeText(getContext(), "Đã xóa bộ lọc", Toast.LENGTH_SHORT).show();
+            });
         }
 
     }
@@ -294,6 +306,17 @@ public class BookInventoryFragment extends Fragment {
 
         if (adapter != null) {
             adapter.notifyDataSetChanged();
+        }
+        updateClearFilterButton();
+    }
+
+    private boolean isFilterActive() {
+        return maxPriceFilter < 1000000 || !"all".equals(conditionFilter) || !"all".equals(categoryFilter);
+    }
+
+    private void updateClearFilterButton() {
+        if (btnClearFilter != null) {
+            btnClearFilter.setVisibility(isFilterActive() ? View.VISIBLE : View.GONE);
         }
     }
 

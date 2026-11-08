@@ -11,7 +11,7 @@
 | Thành phần              | File                                   | Vai trò                                                                                        |
 | ----------------------- | -------------------------------------- | ---------------------------------------------------------------------------------------------- |
 | `MainActivity`          | `MainActivity.java`                    | Chứa `fragment_container` + `BottomNavigationView`, đổi tiêu đề qua `setScreenTitle()`         |
-| `BookInventoryFragment` | `fragments/BookInventoryFragment.java` | Màn hình **Kho sách** – điểm bắt đầu luồng **Sửa** và **Xoá**                                  |
+| `BookInventoryFragment` | `fragments/BookInventoryFragment.java` | Màn hình **Trang chủ** – điểm bắt đầu luồng **Sửa** và **Xoá**                                 |
 | `AddBookFragment`       | `fragments/AddBookFragment.java`       | Màn hình form, dùng chung cho **Thêm** và **Sửa** (phân biệt bằng cờ `isEditing`)              |
 | `BookAdapter`           | `adapters/BookAdapter.java`            | Hiển thị từng dòng sách, bắt sự kiện nút Sửa/Xoá và báo về Fragment qua `OnBookActionListener` |
 | `BookStore`             | `BookStore.java`                       | Thực hiện thao tác SQL: `addBook`, `updateBook`, `deleteBook`, `getAllBooks`                   |
@@ -104,9 +104,9 @@ db.insert(TABLE, null, bookValues(book));   // INSERT INTO book (...) VALUES (..
 db.close();
 ```
 
-**Bước 7 – Quay về Kho sách** (`navigateToHome`, `AddBookFragment.java:364`)
+**Bước 7 – Quay về Trang chủ** (`navigateToHome`, `AddBookFragment.java:364`)
 
-- Vì `isEditing = false`, app gọi `bottomNav.setSelectedItemId(R.id.nav_inventory)`. Lệnh này kích hoạt listener của `MainActivity`, listener tạo `BookInventoryFragment` mới và đổi tiêu đề thành "Kho sách".
+- Vì `isEditing = false`, app gọi `bottomNav.setSelectedItemId(R.id.nav_inventory)`. Lệnh này kích hoạt listener của `MainActivity`, listener tạo `BookInventoryFragment` mới và đổi tiêu đề thành "Trang chủ".
 - `BookInventoryFragment` gọi `loadBooks()`, sắp xếp theo `id` giảm dần, nên **sách vừa thêm hiện ở đầu danh sách**.
 
 ### 1.3 Lưu ý kỹ thuật
@@ -159,7 +159,7 @@ sequenceDiagram
 
 - Lấy `book` từ `filteredBooks` (danh sách đang hiển thị sau khi search/lọc), **không phải** `allBooks`.
 - Đóng gói các key: `book_id`, `book_code`, `title`, `author`, `category`, `condition`, `price`, `original_price`, `image_uri`.
-- Đổi tiêu đề thành "Chỉnh sửa sách", rồi `replace(...)` kèm `addToBackStack(null)`, nên nút Back hệ thống sẽ đưa người dùng về Kho sách.
+- Đổi tiêu đề thành "Chỉnh sửa sách", rồi `replace(...)` kèm `addToBackStack(null)`, nên nút Back hệ thống sẽ đưa người dùng về Trang chủ.
 
 **Bước 3 – Đổ dữ liệu vào form** (`AddBookFragment.java:196`)
 
@@ -189,7 +189,7 @@ db.update(TABLE, bookValues(book), "id=?", new String[]{ String.valueOf(book.get
 ### 2.3 Lưu ý kỹ thuật
 
 - **Lỗi dữ liệu tình trạng:** sách seed có `condition = "Rất mới"` (95%). Giá trị này không nằm trong 3 lựa chọn của dropdown, nhưng vẫn được đổ vào form. Khi lưu, công thức tính `conditionPercent` rơi vào nhánh mặc định nên **95% bị đổi thành 60%**.
-- **Tiêu đề không nhất quán:** sau khi sửa, tiêu đề được đặt là "Trang chủ" thay vì "Kho sách".
+- **Tiêu đề không nhất quán:** sau khi sửa, tiêu đề được đặt là "Trang chủ" thay vì "Trang chủ".
 - **Dữ liệu có thể cũ:** form lấy dữ liệu từ `Bundle` (bản chụp lúc nhấn Sửa), không đọc lại từ DB theo `book_id`.
 - **Back stack:** nếu đang ở màn Sửa mà người dùng nhấn sang tab khác trên BottomNav, transaction `replace` mới không vào back stack, trong khi entry Sửa vẫn còn trong back stack. Điều này dễ gây trạng thái điều hướng khó đoán.
 - `updateBook` không gọi `db.close()`, trong khi `addBook` thì có, nên cách quản lý kết nối không nhất quán.

@@ -182,7 +182,7 @@ try {
 
 - `categoryList.set(position, existingCategory)` + `notifyItemChanged(position)` chỉ vẽ lại đúng một dòng.
 - Các màn hình khác **tự thấy tên mới** vì luôn đọc lại DB khi mở:
-  - Kho sách: nhãn thể loại trên từng sách và Spinner lọc thể loại.
+  - Trang chủ: nhãn thể loại trên từng sách và Spinner lọc thể loại.
   - Thêm/Sửa sách: dropdown thể loại.
 
 ### 2.3 Lưu ý kỹ thuật
@@ -257,7 +257,7 @@ SELECT COUNT(*) FROM book WHERE category COLLATE NOCASE = ?
 
 ### 3.3 Lưu ý kỹ thuật
 
-- **Xoá hết thì dữ liệu mẫu quay lại:** `getAllBooks()` chèn lại 4 thể loại mẫu mỗi khi bảng rỗng. Nếu người dùng xoá **toàn bộ** thể loại rồi mở lại tab, dữ liệu mẫu **xuất hiện lại**. Kho sách cũng có hành vi tương tự với `BookStore.getAllBooks()`. Nên seed **một lần** trong `DatabaseHelper.onCreate` hoặc dùng cờ trong `SharedPreferences`.
+- **Xoá hết thì dữ liệu mẫu quay lại:** `getAllBooks()` chèn lại 4 thể loại mẫu mỗi khi bảng rỗng. Nếu người dùng xoá **toàn bộ** thể loại rồi mở lại tab, dữ liệu mẫu **xuất hiện lại**. Trang chủ cũng có hành vi tương tự với `BookStore.getAllBooks()`. Nên seed **một lần** trong `DatabaseHelper.onCreate` hoặc dùng cờ trong `SharedPreferences`.
 - **Có khoảng hở giữa lúc kiểm tra và lúc xoá:** việc đếm sách diễn ra trước khi hiện dialog. Trên một thiết bị đơn người dùng thì rủi ro thấp, nhưng về nguyên tắc nên kiểm tra và xoá **trong cùng một transaction** ở tầng `CategoryStore`.
 - Fragment tạo thêm một `DatabaseHelper` mới chỉ để gọi `hasBooksInCategory`. Nên dùng chung một instance (singleton).
 - Không kiểm tra giá trị trả về của `deleteCategory`.

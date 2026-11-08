@@ -349,7 +349,6 @@ public class AddBookFragment extends Fragment {
     private void navigateToHome() {
         if (getActivity() != null) {
             if (isEditing) {
-                // Rời màn sửa (Cập nhật hoặc Hủy) -> báo màn danh sách xóa bộ lọc khi quay lại
                 getParentFragmentManager().setFragmentResult(BookInventoryFragment.RESULT_CLEAR_FILTER, new Bundle());
                 if (getActivity() instanceof MainActivity) {
                     ((MainActivity) getActivity()).setScreenTitle("Trang chủ");

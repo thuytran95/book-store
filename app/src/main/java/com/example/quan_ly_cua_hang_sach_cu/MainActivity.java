@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, new BookInventoryFragment())
                     .commit();
-            txtScreenTitle.setText("Kho sách");
+            txtScreenTitle.setText("Trang chủ");
         }
 
         bottomNav.setOnItemSelectedListener(item -> {
@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
             if (itemId == R.id.nav_inventory) {
                 selectedFragment = new BookInventoryFragment();
-                txtScreenTitle.setText("Kho sách");
+                txtScreenTitle.setText("Trang chủ");
             } else if (itemId == R.id.nav_category) {
                 selectedFragment = new CategoryFragment();
                 txtScreenTitle.setText("Thể loại");

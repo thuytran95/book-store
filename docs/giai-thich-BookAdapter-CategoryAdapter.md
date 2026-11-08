@@ -14,7 +14,7 @@ Mỗi adapter làm 3 việc chính:
 
 File: `app/src/main/java/com/example/quan_ly_cua_hang_sach_cu/adapters/BookAdapter.java`
 
-- Dùng trong `BookInventoryFragment` (màn hình kho sách), hiển thị danh sách `filteredBooks`.
+- Dùng trong `BookInventoryFragment` (màn hình Trang chủ), hiển thị danh sách `filteredBooks`.
 - Mỗi dòng hiển thị: mã sách, tên sách, tác giả, thể loại, tình trạng, giá bán, giá gốc và ảnh bìa.
 - Badge tình trạng đổi màu theo nội dung:
   - "Tốt"/"Mới": xanh lá

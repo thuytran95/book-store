@@ -21,7 +21,7 @@
 
 **Chức năng chính:**
 
-1. Kho sách: xem danh sách, tìm kiếm (bỏ dấu tiếng Việt), lọc theo giá / tình trạng / thể loại, sửa, xoá.
+1. Trang chủ: xem danh sách, tìm kiếm (bỏ dấu tiếng Việt), lọc theo giá / tình trạng / thể loại, sửa, xoá.
 2. Thể loại: thêm, sửa (đổi tên lan truyền sang sách), xoá (chặn nếu còn sách).
 3. Thêm / sửa sách: nhập thông tin, chọn ảnh bìa từ thiết bị, validate form.
 
@@ -131,14 +131,14 @@ Quan hệ `book ↔ category` là **quan hệ logic qua tên** (không có FOREI
 
 ### 5.1 Điều hướng
 
-- `MainActivity` giữ `BottomNavigationView` với 3 tab: **Kho sách**, **Thể loại**, **Thêm sách**.
+- `MainActivity` giữ `BottomNavigationView` với 3 tab: **Trang chủ**, **Thể loại**, **Thêm sách**.
 - Mỗi lần chọn tab: `FragmentTransaction.replace(...)` với **instance Fragment mới** (không giữ state, không back stack).
 - Màn hình **Sửa sách**: `BookInventoryFragment` đóng gói toàn bộ field của `Book` vào `Bundle`, mở `AddBookFragment` với `addToBackStack(null)`; sau khi lưu thì `popBackStack()`.
 - Tiêu đề màn hình được Fragment cập nhật qua `((MainActivity) getActivity()).setScreenTitle(...)` → Fragment phụ thuộc cứng vào Activity cụ thể.
 
 ### 5.2 Các luồng chính
 
-**Xem / lọc kho sách** (`BookInventoryFragment`)
+**Xem / lọc Trang chủ** (`BookInventoryFragment`)
 
 ```
 onCreateView/onResume → bookStore.getAllBooks() → sort theo id giảm dần
@@ -154,7 +154,7 @@ onCreateView/onResume → bookStore.getAllBooks() → sort theo id giảm dần
 ```
 Chọn ảnh (ActivityResultContracts.GetContent) → takePersistableUriPermission
 → validate form (hiển thị lỗi inline) → format giá theo Locale vi-VN
-→ bookStore.addBook / updateBook → Toast → quay về Kho sách
+→ bookStore.addBook / updateBook → Toast → quay về Trang chủ
 ```
 
 **Quản lý thể loại** (`CategoryFragment`)

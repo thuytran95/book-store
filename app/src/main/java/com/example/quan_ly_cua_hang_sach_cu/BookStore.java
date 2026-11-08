@@ -85,18 +85,6 @@ public class BookStore {
         return list;
     }
 
-    public List<Book> getAllOrSeed() {
-        List<Book> list = getAllBooks();
-        if (list.isEmpty()) {
-            addBook(new Book("MS-00124", "Nỗi Buồn Chiến Tranh", "Bảo Ninh", "Văn học", "Tốt", 85, "65.000 đ", "120.000 đ", null));
-            addBook(new Book("MS-00208", "Vũ Trụ Trong Vỏ Hạt Dẻ", "Stephen Hawking", "Khoa học", "Rất mới", 95, "88.000 đ", null, null));
-            addBook(new Book("MS-00315", "Steve Jobs - Tiểu Sử Chính Thức", "Walter Isaacson", "Tiểu sử", "Khá", 70, "95.000 đ", "190.000 đ", null));
-            addBook(new Book("MS-00412", "Dế Mèn Phiêu Lưu Ký", "Tô Hoài", "Văn học", "Trung bình", 80, "45.000 đ", "85.000 đ", null));
-            list = getAllBooks();
-        }
-        return list;
-    }
-
     public boolean hasBooksInCategory(String categoryName) {
         if (categoryName == null) return false;
         SQLiteDatabase db = helper.getReadableDatabase();

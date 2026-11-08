@@ -27,6 +27,7 @@ public class CategoryFragment extends Fragment {
     private List<Category> categoryList;
     private CategoryAdapter adapter;
     private CategoryStore categoryStore;
+    private TextView txtCategoryCount;
 
     @Nullable
     @Override
@@ -36,9 +37,11 @@ public class CategoryFragment extends Fragment {
         categoryStore = new CategoryStore(new DatabaseHelper(getContext()));
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerViewCategories);
+        txtCategoryCount = view.findViewById(R.id.txtCategoryCount);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        categoryList = categoryStore.getAllOrSeed();
+        categoryList = categoryStore.getAllCategories();
+        updateCategoryCount();
 
         adapter = new CategoryAdapter(categoryList, new CategoryAdapter.OnCategoryActionListener() {
             @Override
@@ -60,6 +63,7 @@ public class CategoryFragment extends Fragment {
                             categoryStore.deleteCategory(cat);
                             categoryList.remove(position);
                             adapter.notifyItemRemoved(position);
+                            updateCategoryCount();
                             Toast.makeText(getContext(), "Đã xóa thể loại thành công!", Toast.LENGTH_SHORT).show();
                         })
                         .setNegativeButton("Hủy", null)
@@ -78,6 +82,12 @@ public class CategoryFragment extends Fragment {
         btnAddCategory.setOnClickListener(v -> showCategoryDialog(null, -1));
 
         return view;
+    }
+
+    private void updateCategoryCount() {
+        if (txtCategoryCount != null && categoryList != null) {
+            txtCategoryCount.setText(categoryList.size() + " danh mục đang hoạt động");
+        }
     }
 
     private void showCategoryDialog(@Nullable Category existingCategory, int position) {
@@ -115,6 +125,7 @@ public class CategoryFragment extends Fragment {
                         categoryList.set(position, existingCategory);
                         adapter.notifyItemChanged(position);
                     }
+                    updateCategoryCount();
                     Toast.makeText(getContext(), "Đã cập nhật thể loại thành công!", Toast.LENGTH_SHORT).show();
                 } else {
                     Category newCat = new Category(name);
@@ -122,6 +133,7 @@ public class CategoryFragment extends Fragment {
                     categoryList.clear();
                     categoryList.addAll(categoryStore.getAllCategories());
                     adapter.notifyDataSetChanged();
+                    updateCategoryCount();
                     Toast.makeText(getContext(), "Đã thêm thể loại mới thành công!", Toast.LENGTH_SHORT).show();
                 }
                 dialog.dismiss();

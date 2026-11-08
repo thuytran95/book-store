@@ -14,7 +14,7 @@
 | `BookInventoryFragment` | `fragments/BookInventoryFragment.java` | Màn hình **Kho sách** – điểm bắt đầu luồng **Sửa** và **Xoá**                                  |
 | `AddBookFragment`       | `fragments/AddBookFragment.java`       | Màn hình form, dùng chung cho **Thêm** và **Sửa** (phân biệt bằng cờ `isEditing`)              |
 | `BookAdapter`           | `adapters/BookAdapter.java`            | Hiển thị từng dòng sách, bắt sự kiện nút Sửa/Xoá và báo về Fragment qua `OnBookActionListener` |
-| `BookStore`             | `BookStore.java`                       | Thực hiện thao tác SQL: `addBook`, `updateBook`, `deleteBook`, `getAllOrSeed`                  |
+| `BookStore`             | `BookStore.java`                       | Thực hiện thao tác SQL: `addBook`, `updateBook`, `deleteBook`, `getAllBooks`                   |
 | `DatabaseHelper`        | `DatabaseHelper.java`                  | Mở file `bookstore.db`                                                                         |
 | `Book`                  | `models/Book.java`                     | Đối tượng dữ liệu (POJO)                                                                       |
 
@@ -37,7 +37,7 @@ sequenceDiagram
 
     U->>MA: Nhấn tab "Thêm sách" (nav_add)
     MA->>F: replace(new AddBookFragment()) — không có arguments
-    F->>CS: getAllOrSeed()
+    F->>CS: getAllBooks()
     CS->>DB: SELECT * FROM category
     DB-->>F: Danh sách thể loại → dropdown
     U->>F: (tuỳ chọn) Chọn ảnh bìa
@@ -68,7 +68,7 @@ sequenceDiagram
 - Tạo `DatabaseHelper`, `BookStore`, `CategoryStore`.
 - Gắn dấu `*` đỏ cho các trường bắt buộc bằng `Html.fromHtml`.
 - Gắn `TextWatcher` để **ẩn thông báo lỗi** ngay khi người dùng gõ lại.
-- Dropdown **Thể loại** lấy dữ liệu từ `categoryStore.getAllOrSeed()`. Dropdown **Tình trạng** cố định 3 giá trị: `Tốt`, `Khá`, `Trung bình`.
+- Dropdown **Thể loại** lấy dữ liệu từ `categoryStore.getAllBooks()`. Dropdown **Tình trạng** cố định 3 giá trị: `Tốt`, `Khá`, `Trung bình`.
 
 **Bước 3 – Chọn ảnh bìa (tuỳ chọn)** (`AddBookFragment.java:46`)
 

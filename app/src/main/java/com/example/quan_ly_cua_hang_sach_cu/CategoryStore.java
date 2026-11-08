@@ -86,16 +86,4 @@ public class CategoryStore {
         db.close();
         return list;
     }
-
-    public List<Category> getAllOrSeed() {
-        List<Category> list = getAllCategories();
-        if (list.isEmpty()) {
-            addCategory(new Category("Văn học cổ điển & Hiện đại"));
-            addCategory(new Category("Khoa học & Vũ trụ"));
-            addCategory(new Category("Lịch sử & Triết học"));
-            addCategory(new Category("Tiểu sử & Danh nhân"));
-            list = getAllCategories();
-        }
-        return list;
-    }
 }

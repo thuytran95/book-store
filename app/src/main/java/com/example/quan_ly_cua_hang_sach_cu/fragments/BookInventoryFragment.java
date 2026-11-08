@@ -133,7 +133,7 @@ public class BookInventoryFragment extends Fragment {
     }
 
     private void loadBooks() {
-        allBooks = bookStore.getAllOrSeed();
+        allBooks = bookStore.getAllBooks();
         allBooks.sort((b1, b2) -> Integer.compare(b2.getId(), b1.getId()));
         filteredBooks.clear();
         filteredBooks.addAll(allBooks);
@@ -200,18 +200,21 @@ public class BookInventoryFragment extends Fragment {
         String[] categories = categoryList.toArray(new String[0]);
         ArrayAdapter<String> catAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, categories);
         spinnerCategory.setAdapter(catAdapter);
+        final int[] pendingMaxPrice = {maxPriceFilter};
 
         // Set current filter values
         seekBarPrice.setProgress(maxPriceFilter);
         NumberFormat nf = NumberFormat.getInstance(new Locale("vi", "VN"));
         txtPriceRangeLabel.setText("Khoảng giá (VNĐ): 50.000 đ - " + nf.format(maxPriceFilter) + " đ");
+        spinnerCondition.setSelection(conditionSpinnerPosition());
+        int currentCatPos = categoryList.indexOf(categoryFilter);
+        spinnerCategory.setSelection(currentCatPos > 0 ? currentCatPos : 0);
 
         seekBarPrice.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                int actualProgress = Math.max(progress, 50000);
-                maxPriceFilter = actualProgress;
-                txtPriceRangeLabel.setText("Khoảng giá (VNĐ): 50.000 đ - " + nf.format(maxPriceFilter) + " đ");
+                pendingMaxPrice[0] = Math.max(progress, 50000);
+                txtPriceRangeLabel.setText("Khoảng giá (VNĐ): 50.000 đ - " + nf.format(pendingMaxPrice[0]) + " đ");
             }
 
             @Override
@@ -224,16 +227,16 @@ public class BookInventoryFragment extends Fragment {
         btnCloseFilter.setOnClickListener(v -> dialog.dismiss());
 
         btnResetFilter.setOnClickListener(v -> {
-            maxPriceFilter = 1000000;
-            conditionFilter = "all";
-            categoryFilter = "all";
-            seekBarPrice.setProgress(maxPriceFilter);
+            pendingMaxPrice[0] = 1000000;
+            seekBarPrice.setProgress(1000000);
             spinnerCondition.setSelection(0);
             spinnerCategory.setSelection(0);
             txtPriceRangeLabel.setText("Khoảng giá (VNĐ): 50.000 đ - 1.000.000 đ");
         });
 
         btnApplyFilter.setOnClickListener(v -> {
+            maxPriceFilter = pendingMaxPrice[0];
+
             int condPos = spinnerCondition.getSelectedItemPosition();
             if (condPos == 1) conditionFilter = "good";
             else if (condPos == 2) conditionFilter = "fair";
@@ -292,6 +295,13 @@ public class BookInventoryFragment extends Fragment {
         if (adapter != null) {
             adapter.notifyDataSetChanged();
         }
+    }
+
+    private int conditionSpinnerPosition() {
+        if ("good".equals(conditionFilter)) return 1;
+        if ("fair".equals(conditionFilter)) return 2;
+        if ("avg".equals(conditionFilter)) return 3;
+        return 0;
     }
 
     private int parsePrice(String priceStr) {

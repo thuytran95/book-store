@@ -165,7 +165,7 @@ public class AddBookFragment extends Fragment {
         });
 
         // 1. Load categories
-        List<Category> categoryModels = categoryStore.getAllOrSeed();
+        List<Category> categoryModels = categoryStore.getAllCategories();
 
         List<String> categoryNames = new ArrayList<>();
         for (Category cat : categoryModels) {

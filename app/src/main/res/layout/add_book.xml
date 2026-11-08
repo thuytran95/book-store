@@ -223,14 +223,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:baselineAligned="false"
-                    android:orientation="horizontal"
-                    android:weightSum="2">
+                    android:orientation="horizontal">
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:layout_marginEnd="6dp"
                         android:orientation="vertical">
 
                         <TextView
@@ -262,34 +260,6 @@
                             android:textColor="@color/error"
                             android:textSize="11sp"
                             android:visibility="gone" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="6dp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Giá bìa gốc (đ)"
-                            android:textColor="@color/on_surface_variant"
-                            android:textSize="12sp"
-                            android:textStyle="bold" />
-
-                        <EditText
-                            android:id="@+id/edtAddOriginalPrice"
-                            android:layout_width="match_parent"
-                            android:layout_height="48dp"
-                            android:layout_marginTop="4dp"
-                            android:autofillHints="creditCardNumber"
-                            android:background="@drawable/bg_search_box"
-                            android:hint="120000"
-                            android:inputType="number"
-                            android:paddingHorizontal="12dp"
-                            android:textSize="14sp" />
                     </LinearLayout>
                 </LinearLayout>
 

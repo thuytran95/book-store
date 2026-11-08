@@ -76,16 +76,6 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
             holder.txtPrice.setText(formatPrice(book.getPrice()));
         }
 
-        if (holder.txtOriginalPrice != null) {
-            String origPrice = book.getOriginalPrice();
-            if (origPrice != null && !origPrice.trim().isEmpty() && !origPrice.equals("0")) {
-                holder.txtOriginalPrice.setVisibility(View.VISIBLE);
-                holder.txtOriginalPrice.setText(formatPrice(origPrice));
-            } else {
-                holder.txtOriginalPrice.setVisibility(View.GONE);
-            }
-        }
-
         if (holder.ivBookCover != null) {
             if (book.getImageUri() != null && !book.getImageUri().isEmpty()) {
                 try {
@@ -150,7 +140,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
     }
 
     static class BookViewHolder extends RecyclerView.ViewHolder {
-        TextView txtBookId, txtBookTitle, txtAuthor, txtCategoryTag, txtCondition, txtPrice, txtOriginalPrice;
+        TextView txtBookId, txtBookTitle, txtAuthor, txtCategoryTag, txtCondition, txtPrice;
         ImageView ivBookCover;
         View btnEdit, btnDelete;
 
@@ -162,7 +152,6 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
             txtCategoryTag = itemView.findViewById(R.id.txtCategoryTag);
             txtCondition = itemView.findViewById(R.id.txtCondition);
             txtPrice = itemView.findViewById(R.id.txtPrice);
-            txtOriginalPrice = itemView.findViewById(R.id.txtOriginalPrice);
             ivBookCover = itemView.findViewById(R.id.ivBookCover);
             btnEdit = itemView.findViewById(R.id.btnEdit);
             btnDelete = itemView.findViewById(R.id.btnDelete);

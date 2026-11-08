@@ -42,6 +42,7 @@ public class AddBookFragment extends Fragment {
     private boolean isEditing = false;
     private int editBookId = -1;
     private String editBookCode = null;
+    private String editOriginalPrice = null;
 
     private final ActivityResultLauncher<String> imagePickerLauncher = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
@@ -76,7 +77,6 @@ public class AddBookFragment extends Fragment {
         EditText edtAuthor = view.findViewById(R.id.edtAddAuthor);
         EditText edtIsbn = view.findViewById(R.id.edtAddIsbn);
         EditText edtPrice = view.findViewById(R.id.edtAddPrice);
-        EditText edtOriginalPrice = view.findViewById(R.id.edtAddOriginalPrice);
         AutoCompleteTextView autoCompleteCategory = view.findViewById(R.id.autoCompleteCategory);
         AutoCompleteTextView autoCompleteCondition = view.findViewById(R.id.autoCompleteCondition);
 
@@ -213,11 +213,8 @@ public class AddBookFragment extends Fragment {
                 edtPrice.setText(cleanPrice);
             }
 
-            String origPrice = getArguments().getString("original_price");
-            if (origPrice != null) {
-                String cleanOrigPrice = origPrice.replaceAll("[^0-9]", "");
-                edtOriginalPrice.setText(cleanOrigPrice);
-            }
+            // Không còn ô nhập giá gốc, nhưng giữ giá trị cũ để cập nhật không làm mất dữ liệu trong DB
+            editOriginalPrice = getArguments().getString("original_price");
 
             String cat = getArguments().getString("category");
             if (cat != null) autoCompleteCategory.setText(cat, false);
@@ -248,7 +245,6 @@ public class AddBookFragment extends Fragment {
             String author = edtAuthor.getText().toString().trim();
             String isbn = edtIsbn.getText().toString().trim();
             String price = edtPrice.getText().toString().trim();
-            String originalPrice = edtOriginalPrice.getText().toString().trim();
             String selectedCategory = autoCompleteCategory.getText().toString().trim();
             String selectedCondition = autoCompleteCondition.getText().toString().trim();
 
@@ -269,25 +265,14 @@ public class AddBookFragment extends Fragment {
                 finalPrice = price + " đ";
             }
 
-            String finalOrigPrice = null;
-            if (!originalPrice.isEmpty()) {
-                try {
-                    long opVal = Long.parseLong(originalPrice);
-                    NumberFormat nf = NumberFormat.getInstance(new Locale("vi", "VN"));
-                    finalOrigPrice = nf.format(opVal) + " đ";
-                } catch (Exception e) {
-                    finalOrigPrice = originalPrice + " đ";
-                }
-            }
-
             int conditionPercent = selectedCondition.equals("Tốt") ? 90 : (selectedCondition.equals("Khá") ? 75 : 60);
 
             if (isEditing) {
-                Book updatedBook = new Book(editBookId, bookCode, title, author, selectedCategory, selectedCondition, conditionPercent, finalPrice, finalOrigPrice, selectedImageUri);
+                Book updatedBook = new Book(editBookId, bookCode, title, author, selectedCategory, selectedCondition, conditionPercent, finalPrice, editOriginalPrice, selectedImageUri);
                 bookStore.updateBook(updatedBook);
                 Toast.makeText(getContext(), "Đã cập nhật sách thành công!", Toast.LENGTH_SHORT).show();
             } else {
-                Book newBook = new Book(bookCode, title, author, selectedCategory, selectedCondition, conditionPercent, finalPrice, finalOrigPrice, selectedImageUri);
+                Book newBook = new Book(bookCode, title, author, selectedCategory, selectedCondition, conditionPercent, finalPrice, null, selectedImageUri);
                 bookStore.addBook(newBook);
                 Toast.makeText(getContext(), "Đã lưu sách thành công vào kho!", Toast.LENGTH_SHORT).show();
             }

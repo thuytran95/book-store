@@ -319,7 +319,6 @@ public class BookInventoryFragment extends Fragment {
         updateClearFilterButton();
     }
 
-    /** Đưa bộ lọc giá / tình trạng / thể loại về mặc định (không đụng ô tìm kiếm). */
     private void resetFilters() {
         minPriceFilter = MIN_PRICE;
         maxPriceFilter = MAX_PRICE;
@@ -350,7 +349,6 @@ public class BookInventoryFragment extends Fragment {
         }
     }
 
-    /** Làm tròn giá về bội số PRICE_STEP, giới hạn trong [MIN_PRICE, MAX_PRICE]. */
     private float snapToPriceStep(int price) {
         int clamped = Math.max(MIN_PRICE, Math.min(MAX_PRICE, price));
         int steps = Math.round((clamped - MIN_PRICE) / (float) PRICE_STEP);

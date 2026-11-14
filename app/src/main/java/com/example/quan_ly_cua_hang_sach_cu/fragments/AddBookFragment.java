@@ -255,7 +255,6 @@ public class AddBookFragment extends Fragment {
 
             String bookCode = isbn.isEmpty() ? (editBookCode != null ? editBookCode : "MS-" + (int)(Math.random() * 90000 + 10000)) : isbn;
 
-            // Format price string for DB display
             String finalPrice;
             try {
                 long pVal = Long.parseLong(price);
